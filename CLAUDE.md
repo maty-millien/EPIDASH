@@ -10,6 +10,8 @@ EPIDASH is an Electron desktop application for Epitech students to view their Ep
 
 Never run dev servers (`bun start`). The user will run them manually.
 
+**Keep this file up to date**: If you make any changes that affect information documented in this file (project structure, IPC handlers, state management, tech stack, etc.), you MUST update this file accordingly. This file should never be outdated.
+
 ## Build & Development Commands
 
 ```bash
