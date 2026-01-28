@@ -1,14 +1,57 @@
 // Authentication flow and protocol handler (replaces Tauri's on_navigation)
 
 import { app, BrowserWindow, session } from "electron"
+import path from "node:path"
 import {
   setToken,
   setTokenExtracted,
   isTokenExtracted,
-  clearState
+  clearState,
+  setAuthInProgress
 } from "@/core/state"
+import { notifyAuthStateChange } from "@/core/ipc"
 
-declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string
+let authWindow: BrowserWindow | null = null
+
+function getMainWindow(): BrowserWindow | null {
+  return BrowserWindow.getAllWindows().find((w) => w !== authWindow) ?? null
+}
+
+function createAuthWindow(): BrowserWindow {
+  if (authWindow && !authWindow.isDestroyed()) {
+    return authWindow
+  }
+
+  const mainWindow = getMainWindow()
+  const mainBounds = mainWindow?.getBounds()
+
+  authWindow = new BrowserWindow({
+    width: mainBounds?.width ?? 1000,
+    height: mainBounds?.height ?? 800,
+    show: false,
+    parent: mainWindow ?? undefined,
+    modal: false,
+    titleBarStyle: "hiddenInset",
+    trafficLightPosition: { x: 15, y: 20 },
+    backgroundColor: "#0a0a0c",
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js"),
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true
+    }
+  })
+
+  setupNavigationHandlers(authWindow)
+
+  authWindow.on("closed", () => {
+    authWindow = null
+    setAuthInProgress(false)
+    notifyAuthStateChange(false)
+  })
+
+  return authWindow
+}
 
 export function registerProtocolHandler(): void {
   // Register the custom protocol for auth callback
@@ -67,13 +110,17 @@ function handleProtocolUrl(url: string): void {
 }
 
 function navigateBackToApp(): void {
-  const mainWindow = BrowserWindow.getAllWindows()[0]
+  if (authWindow && !authWindow.isDestroyed()) {
+    authWindow.close()
+    authWindow = null
+  }
+
+  setAuthInProgress(false)
+  notifyAuthStateChange(false)
+
+  const mainWindow = getMainWindow()
   if (mainWindow) {
-    if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
-      mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL)
-    } else {
-      mainWindow.loadFile("dist/renderer/main_window/index.html")
-    }
+    mainWindow.webContents.send("auth:state-changed", { inProgress: false })
   }
 }
 
@@ -102,13 +149,20 @@ function handleDidNavigate(url: string, window: BrowserWindow): void {
   try {
     const parsed = new URL(url)
 
-    // Reset extraction flag when hitting Microsoft login
+    const isAuthWindow = window === authWindow
+
     if (parsed.hostname.includes("login.microsoftonline.com")) {
       setTokenExtracted(false)
+      if (isAuthWindow && authWindow && !authWindow.isVisible()) {
+        authWindow.show()
+        authWindow.focus()
+      }
     }
 
-    // Extract token when on epitest.eu
     if (parsed.hostname === "myresults.epitest.eu") {
+      if (isAuthWindow && authWindow?.isVisible()) {
+        authWindow.hide()
+      }
       if (!isTokenExtracted()) {
         setTokenExtracted(true)
         setTimeout(() => extractToken(window), 200)
@@ -148,11 +202,18 @@ async function extractToken(window: BrowserWindow): Promise<void> {
 }
 
 export async function startLogin(): Promise<void> {
-  const mainWindow = BrowserWindow.getAllWindows()[0]
-  if (!mainWindow) throw new Error("Main window not found")
-
+  setAuthInProgress(true)
   setTokenExtracted(false)
-  await mainWindow.loadURL("https://myresults.epitest.eu")
+  notifyAuthStateChange(true)
+
+  const window = createAuthWindow()
+  try {
+    await window.loadURL("https://myresults.epitest.eu")
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ERR_ABORTED") {
+      throw error
+    }
+  }
 }
 
 export async function logout(): Promise<void> {
@@ -160,35 +221,34 @@ export async function logout(): Promise<void> {
 }
 
 export async function reauth(): Promise<void> {
-  const mainWindow = BrowserWindow.getAllWindows()[0]
-  if (!mainWindow) throw new Error("Main window not found")
-
   setToken(null)
-  setTokenExtracted(true) // Prevent extraction of old token
+  setAuthInProgress(true)
+  setTokenExtracted(true)
+  notifyAuthStateChange(true)
 
-  await mainWindow.loadURL("https://myresults.epitest.eu")
+  const window = createAuthWindow()
+  try {
+    await window.loadURL("https://myresults.epitest.eu")
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ERR_ABORTED") {
+      throw error
+    }
+  }
 
-  // Wait and clear expired token from localStorage
   await new Promise((resolve) => setTimeout(resolve, 500))
-  await mainWindow.webContents.executeJavaScript(
+  await window.webContents.executeJavaScript(
     "localStorage.removeItem('argos-api.oidc-token');"
   )
 
-  setTokenExtracted(false) // Allow fresh extraction
+  setTokenExtracted(false)
 }
 
 export async function clearSessionData(): Promise<void> {
-  // Clear backend state
   clearState()
 
-  // Clear all browsing data (cookies, localStorage, cache)
   const ses = session.defaultSession
   await ses.clearStorageData()
   await ses.clearCache()
 
-  // Navigate to login page
-  const mainWindow = BrowserWindow.getAllWindows()[0]
-  if (mainWindow) {
-    await mainWindow.loadURL("https://myresults.epitest.eu")
-  }
+  await startLogin()
 }

@@ -96,24 +96,28 @@ import { Dashboard } from "./components/dashboard/Dashboard"
 
 ### Authentication Flow
 
-1. User opens app → check if token exists via IPC
-2. If not logged in → navigate to myresults.epitest.eu
-3. After Microsoft SSO completes, JavaScript extracts JWT from localStorage
-4. Token passed via custom URL scheme: `epidash://token/{encoded_token}`
-5. Main process stores token, navigates back to app
-6. Frontend fetches data via IPC
+1. User opens app → React checks if token exists via IPC
+2. If not logged in → React calls `startLogin()`, shows `AuthLoadingState`
+3. Main process creates hidden auth window, loads `myresults.epitest.eu`
+4. Auth window becomes visible only for `login.microsoftonline.com` (Microsoft login)
+5. After Microsoft SSO completes, JavaScript extracts JWT from localStorage
+6. Token passed via custom URL scheme: `epidash://token/{encoded_token}`
+7. Main process stores token, closes auth window, notifies React via `auth:state-changed`
+8. React receives notification, fetches data via IPC
 
 ### IPC Handlers (`src/core/ipc.ts`)
 
-| Handler             | Purpose                                      |
-| ------------------- | -------------------------------------------- |
-| `auth:is-logged-in` | Check if token exists                        |
-| `auth:start-login`  | Navigate to Microsoft login                  |
-| `auth:logout`       | Clear token from state                       |
-| `auth:reauth`       | Re-authenticate (used on 403 errors)         |
-| `api:fetch-data`    | GET api.epitest.eu/me/2025 with Bearer token |
-| `api:fetch-details` | GET /me/details/{test_run_id}                |
-| `api:fetch-history` | GET /me/2025/{module}/{project}              |
+| Handler              | Purpose                                       |
+| -------------------- | --------------------------------------------- |
+| `auth:is-logged-in`  | Check if token exists                         |
+| `auth:start-login`   | Start login flow in hidden auth window        |
+| `auth:logout`        | Clear token from state                        |
+| `auth:reauth`        | Re-authenticate (used on 403 errors)          |
+| `auth:get-state`     | Get current auth state (`{ inProgress }`)     |
+| `auth:state-changed` | Event sent to renderer when auth state changes|
+| `api:fetch-data`     | GET api.epitest.eu/me/2025 with Bearer token  |
+| `api:fetch-details`  | GET /me/details/{test_run_id}                 |
+| `api:fetch-history`  | GET /me/2025/{module}/{project}               |
 
 ### State Management
 
@@ -121,10 +125,11 @@ import { Dashboard } from "./components/dashboard/Dashboard"
 
 - `token: string | null` - JWT from Microsoft
 - `tokenExtracted: boolean` - prevents extraction loops
+- `authInProgress: boolean` - tracks when auth flow is active
 
 **React** (`src/frontend/App.tsx`):
 
-- `isLoggedIn`, `apiData`, `fetching`, `error` state hooks
+- `isLoggedIn`, `authInProgress`, `apiData`, `fetching`, `error` state hooks
 
 ## API
 

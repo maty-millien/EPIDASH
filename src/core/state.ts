@@ -3,11 +3,13 @@
 interface AppState {
   token: string | null
   tokenExtracted: boolean
+  authInProgress: boolean
 }
 
 const state: AppState = {
   token: null,
-  tokenExtracted: false
+  tokenExtracted: false,
+  authInProgress: false
 }
 
 export function getToken(): string | null {
@@ -33,4 +35,13 @@ export function setTokenExtracted(value: boolean): void {
 export function clearState(): void {
   state.token = null
   state.tokenExtracted = false
+  state.authInProgress = false
+}
+
+export function getAuthInProgress(): boolean {
+  return state.authInProgress
+}
+
+export function setAuthInProgress(value: boolean): void {
+  state.authInProgress = value
 }

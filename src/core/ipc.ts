@@ -1,13 +1,19 @@
 // IPC handlers (replaces Tauri #[tauri::command] functions)
 
-import { ipcMain } from "electron"
-import { getToken, isLoggedIn } from "@/core/state"
+import { BrowserWindow, ipcMain } from "electron"
+import { getToken, isLoggedIn, getAuthInProgress } from "@/core/state"
 import { startLogin, logout, reauth } from "@/core/auth"
 import {
   fetchEpitestData,
   fetchProjectDetails,
   fetchProjectHistory
 } from "@/core/api"
+
+export function notifyAuthStateChange(inProgress: boolean): void {
+  BrowserWindow.getAllWindows().forEach((window) => {
+    window.webContents.send("auth:state-changed", { inProgress })
+  })
+}
 
 export function setupIpcHandlers(): void {
   // Auth handlers
@@ -25,6 +31,10 @@ export function setupIpcHandlers(): void {
 
   ipcMain.handle("auth:reauth", async () => {
     await reauth()
+  })
+
+  ipcMain.handle("auth:get-state", () => {
+    return { inProgress: getAuthInProgress() }
   })
 
   // API handlers

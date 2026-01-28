@@ -12,6 +12,7 @@ const { electronAPI } = window
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [authInProgress, setAuthInProgress] = useState(false)
   const [loading, setLoading] = useState(true)
   const [fetching, setFetching] = useState(false)
   const [apiData, setApiData] = useState<EpitestResult[] | null>(null)
@@ -46,9 +47,24 @@ function App() {
     }
   }, [])
 
-  // Check initial auth state and auto-login
+  useEffect(() => {
+    const unsubscribe = electronAPI.onAuthStateChange((state) => {
+      setAuthInProgress(state.inProgress)
+      if (!state.inProgress) {
+        electronAPI.isLoggedIn().then((loggedIn) => {
+          setIsLoggedIn(loggedIn)
+        })
+      }
+    })
+
+    return unsubscribe
+  }, [])
+
   useEffect(() => {
     const initAuth = async () => {
+      const authState = await electronAPI.getAuthState()
+      setAuthInProgress(authState.inProgress)
+
       const loggedIn = await electronAPI.isLoggedIn()
 
       if (loggedIn) {
@@ -72,6 +88,10 @@ function App() {
     if (!isLoggedIn) return
     fetchData()
   }, [isLoggedIn, fetchData])
+
+  if (authInProgress) {
+    return <LoadingState />
+  }
 
   if (loading || !isLoggedIn) {
     return null
