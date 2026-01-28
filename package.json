@@ -11,7 +11,7 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts,.tsx .",
-    "format": "prettier --write \"src/**/*.{ts,tsx}\""
+    "format": "eslint --ext .ts,.tsx . --fix && prettier --write \"src/**/*.{ts,tsx}\""
   },
   "keywords": [],
   "author": {

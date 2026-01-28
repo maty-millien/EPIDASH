@@ -2,10 +2,7 @@ import { IconRefresh } from "@tabler/icons-react"
 import { motion } from "framer-motion"
 import { useEffect, useMemo, useRef, useState } from "react"
 import type { EpitestResult } from "@/shared/types/api"
-import type {
-  FilterStatus,
-  ProcessedProject
-} from "@/shared/types/ui"
+import type { FilterStatus, ProcessedProject } from "@/shared/types/ui"
 import {
   calculateSummary,
   filterProjects,

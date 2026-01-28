@@ -1,10 +1,7 @@
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
 import type { EpitestResult, ProjectDetailsResponse } from "@/shared/types/api"
-import type {
-  HistoryPoint,
-  ProcessedProject
-} from "@/shared/types/ui"
+import type { HistoryPoint, ProcessedProject } from "@/shared/types/ui"
 import {
   extractConsoleOutput,
   extractCoverage,
