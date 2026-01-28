@@ -1,10 +1,10 @@
+import type { EpitestResult, ProcessedProject, View } from "@/shared/types"
 import { AnimatePresence, motion } from "framer-motion"
 import { useCallback, useEffect, useState } from "react"
 import "./App.css"
 import { Dashboard } from "./components/dashboard"
-import { ErrorState, LoadingState } from "./components/ui"
 import { ProjectDetails } from "./components/project-details"
-import type { EpitestResult, ProcessedProject, View } from "@/shared/types"
+import { ErrorState, LoadingState } from "./components/ui"
 
 const { electronAPI } = window
 

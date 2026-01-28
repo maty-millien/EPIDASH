@@ -73,26 +73,21 @@ src/
 ### Rules
 
 1. **Never mix main and renderer code** - Main process runs in Node.js, renderer runs in browser
-2. **Use barrel exports** - Each component folder must have an `index.ts` exporting its components
-3. **Types go in shared** - All TypeScript interfaces/types go in `src/shared/types/`
-4. **Constants go in shared** - Reusable constants go in `src/shared/constants/`
-5. **Use path alias** - Import shared code with `@/shared/types` not relative paths
-6. **Feature folders** - Group related components in feature folders (e.g., `dashboard/`, `project-details/`)
+2. **No barrel exports** - Do NOT create `index.ts` files for re-exporting. Import directly from source files.
+3. **No comments in code** - Write self-documenting code. Avoid comments unless absolutely necessary.
+4. **Types go in shared** - All TypeScript interfaces/types go in `src/shared/types/`
+5. **Constants go in shared** - Reusable constants go in `src/shared/constants/`
+6. **Use path alias** - Import shared code with `@/shared/types/ui` not relative paths
+7. **Feature folders** - Group related components in feature folders (e.g., `dashboard/`, `project-details/`)
 
 ### Import Patterns
 
 ```tsx
-// Types - always use path alias
-import type { ProcessedProject, FilterStatus } from "@/shared/types"
-
-// Constants - always use path alias
+import type { ProcessedProject, FilterStatus } from "@/shared/types/ui"
+import type { EpitestResult } from "@/shared/types/api"
 import { MODULE_NAMES } from "@/shared/constants/modules"
-
-// UI components - import from barrel
-import { LoadingState, ErrorState } from "./components/ui"
-
-// Feature components - import from barrel
-import { Dashboard } from "./components/dashboard"
+import { LoadingState } from "./components/ui/LoadingState"
+import { Dashboard } from "./components/dashboard/Dashboard"
 ```
 
 ## Architecture
