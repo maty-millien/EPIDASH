@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-EpiDash is an Electron desktop application for Epitech students to view their Epitest automated test results. It authenticates via Microsoft Azure AD SSO and fetches data from the Epitest API.
+EPIDASH is an Electron desktop application for Epitech students to view their Epitest automated test results. It authenticates via Microsoft Azure AD SSO and fetches data from the Epitest API.
 
 ## Important
 
@@ -85,8 +85,8 @@ Use Tailwind CSS over pure CSS. The project has Tailwind configured and all styl
 Use `@tabler/icons-react` for all icons.
 
 ```tsx
-import { IconRefresh, IconCheck } from "@tabler/icons-react";
-<IconRefresh size={16} stroke={2} />;
+import { IconRefresh, IconCheck } from "@tabler/icons-react"
+;<IconRefresh size={16} stroke={2} />
 ```
 
 ## Animations

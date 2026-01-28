@@ -30,7 +30,7 @@ export function ErrorState({ message, onRetry }: ErrorStateProps) {
         Something went wrong
       </motion.h2>
       <motion.p
-        className="text-text-secondary max-w-[400px]"
+        className="text-text-secondary max-w-100"
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.15 }}

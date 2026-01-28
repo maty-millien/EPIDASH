@@ -1,41 +1,41 @@
-import type { ForgeConfig } from '@electron-forge/shared-types'
-import { MakerSquirrel } from '@electron-forge/maker-squirrel'
-import { MakerZIP } from '@electron-forge/maker-zip'
-import { MakerDeb } from '@electron-forge/maker-deb'
-import { MakerRpm } from '@electron-forge/maker-rpm'
-import { VitePlugin } from '@electron-forge/plugin-vite'
-import { FusesPlugin } from '@electron-forge/plugin-fuses'
-import { FuseV1Options, FuseVersion } from '@electron/fuses'
+import { MakerDeb } from "@electron-forge/maker-deb"
+import { MakerRpm } from "@electron-forge/maker-rpm"
+import { MakerSquirrel } from "@electron-forge/maker-squirrel"
+import { MakerZIP } from "@electron-forge/maker-zip"
+import { FusesPlugin } from "@electron-forge/plugin-fuses"
+import { VitePlugin } from "@electron-forge/plugin-vite"
+import type { ForgeConfig } from "@electron-forge/shared-types"
+import { FuseV1Options, FuseVersion } from "@electron/fuses"
 
 const config: ForgeConfig = {
   packagerConfig: {
-    name: 'EpiDash',
-    executableName: 'epidash',
-    appBundleId: 'com.maty.epidash',
+    name: "EPIDASH",
+    executableName: "epidash",
+    appBundleId: "com.maty.epidash",
     asar: true,
-    icon: './resources/icon',
+    icon: "./resources/icon",
     protocols: [
       {
-        name: 'EpiDash Protocol',
-        schemes: ['epidash']
+        name: "EPIDASH Protocol",
+        schemes: ["epidash"]
       }
     ]
   },
   rebuildConfig: {},
   makers: [
     new MakerSquirrel({
-      name: 'EpiDash',
-      setupIcon: './resources/icon.ico'
+      name: "EPIDASH",
+      setupIcon: "./resources/icon.ico"
     }),
-    new MakerZIP({}, ['darwin']),
+    new MakerZIP({}, ["darwin"]),
     new MakerRpm({
       options: {
-        icon: './resources/icon.png'
+        icon: "./resources/icon.png"
       }
     }),
     new MakerDeb({
       options: {
-        icon: './resources/icon.png'
+        icon: "./resources/icon.png"
       }
     })
   ],
@@ -43,20 +43,20 @@ const config: ForgeConfig = {
     new VitePlugin({
       build: [
         {
-          entry: 'src/main.ts',
-          config: 'vite.main.config.mts',
-          target: 'main'
+          entry: "src/main.ts",
+          config: "vite.main.config.mts",
+          target: "main"
         },
         {
-          entry: 'src/preload.ts',
-          config: 'vite.preload.config.mts',
-          target: 'preload'
+          entry: "src/preload.ts",
+          config: "vite.preload.config.mts",
+          target: "preload"
         }
       ],
       renderer: [
         {
-          name: 'main_window',
-          config: 'vite.renderer.config.mts'
+          name: "main_window",
+          config: "vite.renderer.config.mts"
         }
       ]
     }),
