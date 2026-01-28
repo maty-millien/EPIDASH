@@ -43,7 +43,7 @@ const config: ForgeConfig = {
     new VitePlugin({
       build: [
         {
-          entry: "src/main/main.ts",
+          entry: "src/core/main.ts",
           config: "vite.main.config.mts",
           target: "main"
         },

@@ -1,5 +1,3 @@
-// Raw API types from Epitest
-
 export interface EpitestResult {
   project: {
     slug: string
@@ -32,7 +30,6 @@ export interface SkillStats {
   mandatoryFailed: number
 }
 
-// Details API response types
 export interface ProjectDetailsResponse {
   instance: {
     moduleCode: string

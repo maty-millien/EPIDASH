@@ -1,6 +1,3 @@
-// Processed types for display
-import type { EpitestResult } from "./api"
-
 export type ProjectStatus = "perfect" | "passing" | "failing" | "critical"
 export type LintSeverity = "clean" | "minor" | "major" | "fatal"
 
@@ -57,7 +54,6 @@ export interface DashboardSummary {
 export type FilterStatus = "all" | "perfect" | "passing" | "needs-work"
 export type SortOption = "date" | "name" | "passRate" | "status"
 
-// History for progression charts
 export interface HistoryPoint {
   date: Date
   testRunId: number
@@ -66,7 +62,6 @@ export interface HistoryPoint {
   passRate: number
 }
 
-// View navigation
 export type View =
   | { type: "dashboard" }
   | { type: "project-details"; project: ProcessedProject }

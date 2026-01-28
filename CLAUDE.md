@@ -61,14 +61,14 @@ src/
 
 | Type of Code                   | Location                               | Example                      |
 | ------------------------------ | -------------------------------------- | ---------------------------- |
-| New React component (reusable) | `src/renderer/components/ui/`          | LoadingSpinner, Button       |
-| New React component (feature)  | `src/renderer/components/{feature}/`   | SettingsPanel                |
-| New view/page                  | `src/renderer/components/{view-name}/` | Create new folder            |
-| Utility functions (React)      | `src/renderer/utils/`                  | formatDate, processData      |
+| New React component (reusable) | `src/frontend/components/ui/`          | LoadingSpinner, Button       |
+| New React component (feature)  | `src/frontend/components/{feature}/`   | SettingsPanel                |
+| New view/page                  | `src/frontend/components/{view-name}/` | Create new folder            |
+| Utility functions (React)      | `src/frontend/utils/`                  | formatDate, processData      |
 | TypeScript types               | `src/shared/types/`                    | API types, UI types          |
 | Constants/config               | `src/shared/constants/`                | Color mappings, module names |
-| Electron main process code     | `src/main/`                            | New IPC handlers             |
-| New IPC handler                | `src/main/ipc.ts`                      | Add to existing file         |
+| Electron main process code     | `src/core/`                            | New IPC handlers             |
+| New IPC handler                | `src/core/ipc.ts`                      | Add to existing file         |
 
 ### Rules
 
@@ -106,7 +106,7 @@ import { Dashboard } from "./components/dashboard"
 5. Main process stores token, navigates back to app
 6. Frontend fetches data via IPC
 
-### IPC Handlers (`src/main/ipc.ts`)
+### IPC Handlers (`src/core/ipc.ts`)
 
 | Handler             | Purpose                                      |
 | ------------------- | -------------------------------------------- |
@@ -120,12 +120,12 @@ import { Dashboard } from "./components/dashboard"
 
 ### State Management
 
-**Main Process** (`src/main/state.ts`):
+**Main Process** (`src/core/state.ts`):
 
 - `token: string | null` - JWT from Microsoft
 - `tokenExtracted: boolean` - prevents extraction loops
 
-**React** (`src/renderer/App.tsx`):
+**React** (`src/frontend/App.tsx`):
 
 - `isLoggedIn`, `apiData`, `fetching`, `error` state hooks
 
