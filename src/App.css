@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme {
+  /* Terminal Noir Dark */
+  --color-void: #0a0a0c;
+  --color-surface: #12131a;
+  --color-elevated: #1a1b26;
+  --color-hover: #1f2133;
+  --color-border: #2a2d3e;
+  --color-border-medium: #363a4f;
+
+  --color-accent: #00ff9f;
+  --color-accent-dim: rgba(0, 255, 159, 0.15);
+
+  --color-pass: #00ff9f;
+  --color-pass-dim: rgba(0, 255, 159, 0.15);
+  --color-fail: #ff3366;
+  --color-fail-dim: rgba(255, 51, 102, 0.15);
+  --color-crash: #ff6b35;
+  --color-crash-dim: rgba(255, 107, 53, 0.15);
+  --color-warning: #ffcc00;
+  --color-warning-dim: rgba(255, 204, 0, 0.15);
+
+  --color-text: #e4e4e7;
+  --color-text-secondary: #a1a1aa;
+  --color-text-tertiary: #71717a;
+  --color-text-inverse: #0a0a0c;
+
+  --font-sans: "Outfit", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* Base resets */
+html {
+  background: var(--color-void);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  overflow-y: overlay;
+}
+
+/* Animations */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 4px currentColor;
+  }
+  50% {
+    box-shadow: 0 0 12px currentColor;
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Scrollbar - hidden */
+::-webkit-scrollbar {
+  display: none;
+}
