@@ -1,9 +1,9 @@
 import { app, BrowserWindow, screen } from "electron"
 import started from "electron-squirrel-startup"
 import path from "node:path"
-import { registerProtocolHandler, setupNavigationHandlers } from "./auth"
-import { setupIpcHandlers } from "./ipc"
-import { createMenu } from "./menu"
+import { registerProtocolHandler, setupNavigationHandlers } from "@/core/auth"
+import { setupIpcHandlers } from "@/core/ipc"
+import { createMenu } from "@/core/menu"
 
 // Suppress Chromium GPU errors from stderr (log-level 3 = fatal only)
 app.commandLine.appendSwitch("log-level", "3")

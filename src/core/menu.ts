@@ -1,7 +1,7 @@
 // Application menu (replaces Tauri MenuBuilder)
 
 import { Menu, app, MenuItemConstructorOptions } from "electron"
-import { clearSessionData } from "./auth"
+import { clearSessionData } from "@/core/auth"
 
 export function createMenu(): void {
   const isMac = process.platform === "darwin"

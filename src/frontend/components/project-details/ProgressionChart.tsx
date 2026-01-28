@@ -7,7 +7,7 @@ import {
   XAxis,
   YAxis
 } from "recharts"
-import type { HistoryPoint, ProjectStatus } from "@/shared/types"
+import type { HistoryPoint, ProjectStatus } from "@/shared/types/ui"
 
 interface ProgressionChartProps {
   history: HistoryPoint[]

@@ -1,6 +1,6 @@
 import { IconChevronDown, IconSearch } from "@tabler/icons-react"
 import { motion } from "framer-motion"
-import type { FilterStatus } from "@/shared/types"
+import type { FilterStatus } from "@/shared/types/ui"
 
 interface FilterBarProps {
   status: FilterStatus

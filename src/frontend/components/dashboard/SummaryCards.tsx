@@ -1,5 +1,5 @@
 import { motion } from "framer-motion"
-import type { DashboardSummary } from "@/shared/types"
+import type { DashboardSummary } from "@/shared/types/ui"
 
 interface SummaryCardsProps {
   summary: DashboardSummary

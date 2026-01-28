@@ -1,20 +1,20 @@
 import { IconRefresh } from "@tabler/icons-react"
 import { motion } from "framer-motion"
 import { useEffect, useMemo, useRef, useState } from "react"
+import type { EpitestResult } from "@/shared/types/api"
 import type {
-  EpitestResult,
   FilterStatus,
   ProcessedProject
-} from "@/shared/types"
+} from "@/shared/types/ui"
 import {
   calculateSummary,
   filterProjects,
   getUniqueModules,
   processAllProjects
-} from "../../utils/processData"
-import { FilterBar } from "./FilterBar"
-import { ProjectCard } from "./ProjectCard"
-import { SummaryCards } from "./SummaryCards"
+} from "@/frontend/utils/processData"
+import { FilterBar } from "@/frontend/components/dashboard/FilterBar"
+import { ProjectCard } from "@/frontend/components/dashboard/ProjectCard"
+import { SummaryCards } from "@/frontend/components/dashboard/SummaryCards"
 
 interface DashboardProps {
   data: EpitestResult[]

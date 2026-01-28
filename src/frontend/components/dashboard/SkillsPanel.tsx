@@ -1,5 +1,5 @@
 import { motion } from "framer-motion"
-import type { ProcessedSkill, LintSeverity } from "@/shared/types"
+import type { ProcessedSkill, LintSeverity } from "@/shared/types/ui"
 
 interface SkillsPanelProps {
   skills: ProcessedSkill[]

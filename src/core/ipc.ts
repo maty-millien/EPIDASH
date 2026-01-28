@@ -1,13 +1,13 @@
 // IPC handlers (replaces Tauri #[tauri::command] functions)
 
 import { ipcMain } from "electron"
-import { getToken, isLoggedIn } from "./state"
-import { startLogin, logout, reauth } from "./auth"
+import { getToken, isLoggedIn } from "@/core/state"
+import { startLogin, logout, reauth } from "@/core/auth"
 import {
   fetchEpitestData,
   fetchProjectDetails,
   fetchProjectHistory
-} from "./api"
+} from "@/core/api"
 
 export function setupIpcHandlers(): void {
   // Auth handlers

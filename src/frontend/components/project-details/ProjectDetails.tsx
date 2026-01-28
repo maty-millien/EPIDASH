@@ -1,23 +1,22 @@
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
+import type { EpitestResult, ProjectDetailsResponse } from "@/shared/types/api"
 import type {
-  EpitestResult,
   HistoryPoint,
-  ProcessedProject,
-  ProjectDetailsResponse
-} from "@/shared/types"
+  ProcessedProject
+} from "@/shared/types/ui"
 import {
   extractConsoleOutput,
   extractCoverage,
   getAllTestsFromDetails,
   processProjectHistory
-} from "../../utils/processData"
-import { ConsoleOutput } from "./ConsoleOutput"
-import { CoveragePanel } from "./CoveragePanel"
-import { DetailsHeader } from "./DetailsHeader"
-import { ProgressionChart } from "./ProgressionChart"
-import { SkillAccordion } from "./SkillAccordion"
-import { SummaryCards } from "./SummaryCards"
+} from "@/frontend/utils/processData"
+import { ConsoleOutput } from "@/frontend/components/project-details/ConsoleOutput"
+import { CoveragePanel } from "@/frontend/components/project-details/CoveragePanel"
+import { DetailsHeader } from "@/frontend/components/project-details/DetailsHeader"
+import { ProgressionChart } from "@/frontend/components/project-details/ProgressionChart"
+import { SkillAccordion } from "@/frontend/components/project-details/SkillAccordion"
+import { SummaryCards } from "@/frontend/components/project-details/SummaryCards"
 
 const { electronAPI } = window
 

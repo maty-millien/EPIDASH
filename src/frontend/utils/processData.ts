@@ -1,5 +1,11 @@
 import type {
   EpitestResult,
+  ProjectDetailsResponse,
+  DetailedExternalItem,
+  SkillReport,
+  TestResult
+} from "@/shared/types/api"
+import type {
   ProcessedProject,
   ProcessedSkill,
   ProjectStatus,
@@ -7,12 +13,8 @@ import type {
   DashboardSummary,
   FilterStatus,
   SortOption,
-  ProjectDetailsResponse,
-  HistoryPoint,
-  DetailedExternalItem,
-  SkillReport,
-  TestResult
-} from "@/shared/types"
+  HistoryPoint
+} from "@/shared/types/ui"
 import { MODULE_NAMES } from "@/shared/constants/modules"
 
 function getRelativeDate(date: Date): string {
