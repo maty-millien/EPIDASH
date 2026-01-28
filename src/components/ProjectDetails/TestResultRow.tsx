@@ -19,7 +19,13 @@ export function TestResultRow({ test }: TestResultRowProps) {
 
   const getStatusIcon = () => {
     if (test.skipped) {
-      return <IconPlayerSkipForward size={14} stroke={2} className="text-text-tertiary" />
+      return (
+        <IconPlayerSkipForward
+          size={14}
+          stroke={2}
+          className="text-text-tertiary"
+        />
+      )
     }
     if (test.crashed) {
       return <IconFlame size={14} stroke={2} className="text-crash" />

@@ -20,7 +20,7 @@ function getCoverageBg(value: number): string {
 export function CoveragePanel({ lines, branches }: CoveragePanelProps) {
   return (
     <div className="bg-surface border-border rounded-xl border p-5">
-      <h2 className="text-text-secondary mb-4 text-xs font-semibold uppercase tracking-wider">
+      <h2 className="text-text-secondary mb-4 text-xs font-semibold tracking-wider uppercase">
         Coverage
       </h2>
 
@@ -33,7 +33,9 @@ export function CoveragePanel({ lines, branches }: CoveragePanelProps) {
           <div className="flex-1">
             <div className="text-text-tertiary mb-1 text-xs">Lines</div>
             <div className="mb-2 flex items-baseline gap-2">
-              <span className={`font-mono text-2xl font-bold ${getCoverageColor(lines)}`}>
+              <span
+                className={`font-mono text-2xl font-bold ${getCoverageColor(lines)}`}
+              >
                 {lines}%
               </span>
             </div>
@@ -49,12 +51,18 @@ export function CoveragePanel({ lines, branches }: CoveragePanelProps) {
         {/* Branches coverage */}
         <div className="flex items-center gap-4">
           <div className="bg-elevated flex size-10 shrink-0 items-center justify-center rounded-lg">
-            <IconGitBranch size={20} stroke={2} className="text-text-tertiary" />
+            <IconGitBranch
+              size={20}
+              stroke={2}
+              className="text-text-tertiary"
+            />
           </div>
           <div className="flex-1">
             <div className="text-text-tertiary mb-1 text-xs">Branches</div>
             <div className="mb-2 flex items-baseline gap-2">
-              <span className={`font-mono text-2xl font-bold ${getCoverageColor(branches)}`}>
+              <span
+                className={`font-mono text-2xl font-bold ${getCoverageColor(branches)}`}
+              >
                 {branches}%
               </span>
             </div>

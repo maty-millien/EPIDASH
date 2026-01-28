@@ -7,7 +7,7 @@ interface AppState {
 
 const state: AppState = {
   token: null,
-  tokenExtracted: false,
+  tokenExtracted: false
 }
 
 export function getToken(): string | null {

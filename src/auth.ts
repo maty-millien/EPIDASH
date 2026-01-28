@@ -1,12 +1,12 @@
 // Authentication flow and protocol handler (replaces Tauri's on_navigation)
 
-import { app, BrowserWindow, session } from 'electron'
+import { app, BrowserWindow, session } from "electron"
 import {
   setToken,
   setTokenExtracted,
   isTokenExtracted,
-  clearState,
-} from './state'
+  clearState
+} from "./state"
 
 declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string
 
@@ -14,23 +14,23 @@ export function registerProtocolHandler(): void {
   // Register the custom protocol for auth callback
   if (process.defaultApp) {
     if (process.argv.length >= 2) {
-      app.setAsDefaultProtocolClient('epidash', process.execPath, [
-        process.argv[1],
+      app.setAsDefaultProtocolClient("epidash", process.execPath, [
+        process.argv[1]
       ])
     }
   } else {
-    app.setAsDefaultProtocolClient('epidash')
+    app.setAsDefaultProtocolClient("epidash")
   }
 
   // Handle protocol URLs on macOS
-  app.on('open-url', (event, url) => {
+  app.on("open-url", (event, url) => {
     event.preventDefault()
     handleProtocolUrl(url)
   })
 
   // Handle protocol URLs on Windows (second-instance)
-  app.on('second-instance', (_event, commandLine) => {
-    const url = commandLine.find((arg) => arg.startsWith('epidash://'))
+  app.on("second-instance", (_event, commandLine) => {
+    const url = commandLine.find((arg) => arg.startsWith("epidash://"))
     if (url) {
       handleProtocolUrl(url)
     }
@@ -48,7 +48,7 @@ function handleProtocolUrl(url: string): void {
   try {
     const parsed = new URL(url)
 
-    if (parsed.protocol === 'epidash:' && parsed.host === 'token') {
+    if (parsed.protocol === "epidash:" && parsed.host === "token") {
       const encodedToken = parsed.pathname.slice(1) // Remove leading /
       const token = decodeURIComponent(encodedToken)
 
@@ -58,11 +58,11 @@ function handleProtocolUrl(url: string): void {
       }
     }
 
-    if (parsed.protocol === 'epidash:' && parsed.host === 'show-window') {
+    if (parsed.protocol === "epidash:" && parsed.host === "show-window") {
       setTokenExtracted(false)
     }
   } catch {
-    console.error('Failed to parse protocol URL:', url)
+    console.error("Failed to parse protocol URL:", url)
   }
 }
 
@@ -72,28 +72,28 @@ function navigateBackToApp(): void {
     if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
       mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL)
     } else {
-      mainWindow.loadFile('dist/renderer/main_window/index.html')
+      mainWindow.loadFile("dist/renderer/main_window/index.html")
     }
   }
 }
 
 export function setupNavigationHandlers(window: BrowserWindow): void {
   // Handle navigation events
-  window.webContents.on('will-navigate', (event, url) => {
+  window.webContents.on("will-navigate", (event, url) => {
     const parsed = new URL(url)
 
     // Block custom protocol navigations (handled separately via open-url)
-    if (parsed.protocol === 'epidash:') {
+    if (parsed.protocol === "epidash:") {
       event.preventDefault()
       handleProtocolUrl(url)
     }
   })
 
-  window.webContents.on('did-navigate', (_event, url) => {
+  window.webContents.on("did-navigate", (_event, url) => {
     handleDidNavigate(url, window)
   })
 
-  window.webContents.on('did-navigate-in-page', (_event, url) => {
+  window.webContents.on("did-navigate-in-page", (_event, url) => {
     handleDidNavigate(url, window)
   })
 }
@@ -103,12 +103,12 @@ function handleDidNavigate(url: string, window: BrowserWindow): void {
     const parsed = new URL(url)
 
     // Reset extraction flag when hitting Microsoft login
-    if (parsed.hostname.includes('login.microsoftonline.com')) {
+    if (parsed.hostname.includes("login.microsoftonline.com")) {
       setTokenExtracted(false)
     }
 
     // Extract token when on epitest.eu
-    if (parsed.hostname === 'myresults.epitest.eu') {
+    if (parsed.hostname === "myresults.epitest.eu") {
       if (!isTokenExtracted()) {
         setTokenExtracted(true)
         setTimeout(() => extractToken(window), 200)
@@ -143,16 +143,16 @@ async function extractToken(window: BrowserWindow): Promise<void> {
   try {
     await window.webContents.executeJavaScript(extractJs)
   } catch (error) {
-    console.error('Failed to extract token:', error)
+    console.error("Failed to extract token:", error)
   }
 }
 
 export async function startLogin(): Promise<void> {
   const mainWindow = BrowserWindow.getAllWindows()[0]
-  if (!mainWindow) throw new Error('Main window not found')
+  if (!mainWindow) throw new Error("Main window not found")
 
   setTokenExtracted(false)
-  await mainWindow.loadURL('https://myresults.epitest.eu')
+  await mainWindow.loadURL("https://myresults.epitest.eu")
 }
 
 export async function logout(): Promise<void> {
@@ -161,12 +161,12 @@ export async function logout(): Promise<void> {
 
 export async function reauth(): Promise<void> {
   const mainWindow = BrowserWindow.getAllWindows()[0]
-  if (!mainWindow) throw new Error('Main window not found')
+  if (!mainWindow) throw new Error("Main window not found")
 
   setToken(null)
   setTokenExtracted(true) // Prevent extraction of old token
 
-  await mainWindow.loadURL('https://myresults.epitest.eu')
+  await mainWindow.loadURL("https://myresults.epitest.eu")
 
   // Wait and clear expired token from localStorage
   await new Promise((resolve) => setTimeout(resolve, 500))
@@ -189,6 +189,6 @@ export async function clearSessionData(): Promise<void> {
   // Navigate to login page
   const mainWindow = BrowserWindow.getAllWindows()[0]
   if (mainWindow) {
-    await mainWindow.loadURL('https://myresults.epitest.eu')
+    await mainWindow.loadURL("https://myresults.epitest.eu")
   }
 }

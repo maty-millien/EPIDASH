@@ -14,7 +14,11 @@ const titleColors: Record<ProcessedProject["status"], string> = {
   critical: "text-crash"
 }
 
-export function DetailsHeader({ project, gitCommit, onBack }: DetailsHeaderProps) {
+export function DetailsHeader({
+  project,
+  gitCommit,
+  onBack
+}: DetailsHeaderProps) {
   const shortCommit = gitCommit?.slice(0, 7)
 
   return (
@@ -52,7 +56,11 @@ export function DetailsHeader({ project, gitCommit, onBack }: DetailsHeaderProps
 
         {shortCommit && (
           <div className="bg-elevated text-text-secondary flex items-center gap-2 rounded-lg px-3 py-2 font-mono text-xs">
-            <IconGitCommit size={14} stroke={2} className="text-text-tertiary" />
+            <IconGitCommit
+              size={14}
+              stroke={2}
+              className="text-text-tertiary"
+            />
             {shortCommit}
           </div>
         )}

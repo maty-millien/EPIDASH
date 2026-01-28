@@ -17,10 +17,12 @@ export function SummaryCards({ project }: SummaryCardsProps) {
     <div className="grid grid-cols-3 gap-6">
       {/* Pass Rate */}
       <div className="border-border bg-surface flex flex-col gap-2 rounded-xl border p-5">
-        <span className="text-text-tertiary text-[13px] font-medium uppercase tracking-wide">
+        <span className="text-text-tertiary text-[13px] font-medium tracking-wide uppercase">
           Pass Rate
         </span>
-        <span className={`font-mono text-[32px] font-semibold leading-none ${statusColors[project.status]}`}>
+        <span
+          className={`font-mono text-[32px] leading-none font-semibold ${statusColors[project.status]}`}
+        >
           {Math.round(project.passRate)}%
         </span>
         <span className="text-text-tertiary text-[13px]">
@@ -30,11 +32,11 @@ export function SummaryCards({ project }: SummaryCardsProps) {
 
       {/* Tests */}
       <div className="border-border bg-surface flex flex-col gap-2 rounded-xl border p-5">
-        <span className="text-text-tertiary text-[13px] font-medium uppercase tracking-wide">
+        <span className="text-text-tertiary text-[13px] font-medium tracking-wide uppercase">
           Tests
         </span>
         <div className="flex items-baseline gap-2">
-          <span className="text-text font-mono text-[32px] font-semibold leading-none">
+          <span className="text-text font-mono text-[32px] leading-none font-semibold">
             {project.passedTests}
           </span>
           <span className="text-text-tertiary font-mono text-lg">
@@ -54,7 +56,7 @@ export function SummaryCards({ project }: SummaryCardsProps) {
 
       {/* Coding Style */}
       <div className="border-border bg-surface flex flex-col gap-2 rounded-xl border p-5">
-        <span className="text-text-tertiary text-[13px] font-medium uppercase tracking-wide">
+        <span className="text-text-tertiary text-[13px] font-medium tracking-wide uppercase">
           Coding Style
         </span>
         <div className="flex flex-col gap-2">

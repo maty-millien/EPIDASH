@@ -1,13 +1,13 @@
 // API calls to epitest.eu (replaces Rust reqwest calls)
 
-const API_BASE = 'https://api.epitest.eu'
+const API_BASE = "https://api.epitest.eu"
 
 export async function fetchEpitestData(token: string): Promise<unknown> {
   const response = await fetch(`${API_BASE}/me/2025`, {
     headers: {
       Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
+      "Content-Type": "application/json"
+    }
   })
 
   if (!response.ok) {
@@ -24,8 +24,8 @@ export async function fetchProjectDetails(
   const response = await fetch(`${API_BASE}/me/details/${testRunId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
+      "Content-Type": "application/json"
+    }
   })
 
   if (!response.ok) {
@@ -45,8 +45,8 @@ export async function fetchProjectHistory(
     {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
+        "Content-Type": "application/json"
+      }
     }
   )
 

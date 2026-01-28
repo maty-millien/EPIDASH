@@ -244,7 +244,9 @@ export function getUniqueModules(projects: ProcessedProject[]): string[] {
 }
 
 // Process history data for progression chart
-export function processProjectHistory(history: EpitestResult[]): HistoryPoint[] {
+export function processProjectHistory(
+  history: EpitestResult[]
+): HistoryPoint[] {
   return history
     .map((result) => {
       const skills = Object.values(result.results.skills)
@@ -296,15 +298,23 @@ export function getAllTestsFromDetails(
       }
       return null
     })
-    .filter((item): item is { skillName: string; tests: TestResult[] } => item !== null)
+    .filter(
+      (item): item is { skillName: string; tests: TestResult[] } =>
+        item !== null
+    )
 }
 
 // Get coverage info from external items
-export function extractCoverage(
-  externalItems: DetailedExternalItem[]
-): { lines: number; branches: number } {
-  const lineCoverage = externalItems.find((item) => item.type === "coverage.lines")
-  const branchCoverage = externalItems.find((item) => item.type === "coverage.branches")
+export function extractCoverage(externalItems: DetailedExternalItem[]): {
+  lines: number
+  branches: number
+} {
+  const lineCoverage = externalItems.find(
+    (item) => item.type === "coverage.lines"
+  )
+  const branchCoverage = externalItems.find(
+    (item) => item.type === "coverage.branches"
+  )
 
   return {
     lines: lineCoverage?.value ?? 0,

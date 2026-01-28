@@ -39,8 +39,13 @@ export function ProjectDetails({ project, onBack }: ProjectDetailsProps) {
 
       try {
         const [detailsRes, historyRes] = await Promise.all([
-          electronAPI.fetchProjectDetails(project.testRunId) as Promise<ProjectDetailsResponse>,
-          electronAPI.fetchProjectHistory(project.moduleCode, project.slug) as Promise<EpitestResult[]>
+          electronAPI.fetchProjectDetails(
+            project.testRunId
+          ) as Promise<ProjectDetailsResponse>,
+          electronAPI.fetchProjectHistory(
+            project.moduleCode,
+            project.slug
+          ) as Promise<EpitestResult[]>
         ])
 
         setDetails(detailsRes)
@@ -55,8 +60,12 @@ export function ProjectDetails({ project, onBack }: ProjectDetailsProps) {
     fetchData()
   }, [project.testRunId, project.moduleCode, project.slug])
 
-  const consoleOutput = details ? extractConsoleOutput(details.externalItems) : null
-  const coverage = details ? extractCoverage(details.externalItems) : { lines: 0, branches: 0 }
+  const consoleOutput = details
+    ? extractConsoleOutput(details.externalItems)
+    : null
+  const coverage = details
+    ? extractCoverage(details.externalItems)
+    : { lines: 0, branches: 0 }
   const skillTests = details ? getAllTestsFromDetails(details) : []
 
   const containerVariants = {
@@ -79,17 +88,17 @@ export function ProjectDetails({ project, onBack }: ProjectDetailsProps) {
   if (loading) {
     return (
       <div className="mx-auto max-w-300 px-8 pt-6 pb-12">
-        <DetailsHeader
-          project={project}
-          gitCommit={null}
-          onBack={onBack}
-        />
+        <DetailsHeader project={project} gitCommit={null} onBack={onBack} />
         <div className="mt-16 flex items-center justify-center">
           <div className="text-text-tertiary flex items-center gap-3 text-sm">
             <motion.div
               className="bg-accent size-2 rounded-full"
               animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+              transition={{
+                duration: 1.2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
             />
             Loading details...
           </div>
@@ -101,11 +110,7 @@ export function ProjectDetails({ project, onBack }: ProjectDetailsProps) {
   if (error) {
     return (
       <div className="mx-auto max-w-300 px-8 pt-6 pb-12">
-        <DetailsHeader
-          project={project}
-          gitCommit={null}
-          onBack={onBack}
-        />
+        <DetailsHeader project={project} gitCommit={null} onBack={onBack} />
         <div className="text-fail mt-16 text-center text-sm">{error}</div>
       </div>
     )
@@ -128,7 +133,7 @@ export function ProjectDetails({ project, onBack }: ProjectDetailsProps) {
 
       {history.length > 1 && (
         <motion.div variants={itemVariants} className="mt-8">
-          <h2 className="text-text-secondary mb-4 text-xs font-semibold uppercase tracking-wider">
+          <h2 className="text-text-secondary mb-4 text-xs font-semibold tracking-wider uppercase">
             Progression
           </h2>
           <ProgressionChart history={history} status={project.status} />

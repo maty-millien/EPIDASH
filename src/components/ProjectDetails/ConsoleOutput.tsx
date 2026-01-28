@@ -128,7 +128,11 @@ export function ConsoleOutput({ output }: ConsoleOutputProps) {
                 <span className="text-text-tertiary mr-6 w-8 shrink-0 text-right opacity-50 select-none">
                   {i + 1}
                 </span>
-                <span className={`${line.className} whitespace-pre-wrap wrap-break-word`}>{line.text || "\u00A0"}</span>
+                <span
+                  className={`${line.className} wrap-break-word whitespace-pre-wrap`}
+                >
+                  {line.text || "\u00A0"}
+                </span>
               </div>
             ))}
           </pre>

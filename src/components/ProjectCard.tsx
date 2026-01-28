@@ -25,7 +25,11 @@ const rateColors: Record<ProcessedProject["status"], string> = {
   critical: "text-crash"
 }
 
-export function ProjectCard({ project, onSelect, filterKey }: ProjectCardProps) {
+export function ProjectCard({
+  project,
+  onSelect,
+  filterKey
+}: ProjectCardProps) {
   const [expanded, setExpanded] = useState(false)
 
   const handleCardClick = () => {
@@ -42,7 +46,9 @@ export function ProjectCard({ project, onSelect, filterKey }: ProjectCardProps) 
       >
         <div className="min-w-0 flex-1">
           <div className="mb-1 flex items-center gap-2.5">
-            <span className={`truncate text-base font-semibold ${titleColors[project.status]}`}>
+            <span
+              className={`truncate text-base font-semibold ${titleColors[project.status]}`}
+            >
               {project.name}
             </span>
             <span className="bg-elevated text-text-secondary shrink-0 rounded px-2 py-0.5 font-mono text-[11px] font-medium">
