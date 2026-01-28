@@ -107,17 +107,17 @@ import { Dashboard } from "./components/dashboard/Dashboard"
 
 ### IPC Handlers (`src/core/ipc.ts`)
 
-| Handler              | Purpose                                       |
-| -------------------- | --------------------------------------------- |
-| `auth:is-logged-in`  | Check if token exists                         |
-| `auth:start-login`   | Start login flow in hidden auth window        |
-| `auth:logout`        | Clear token from state                        |
-| `auth:reauth`        | Re-authenticate (used on 403 errors)          |
-| `auth:get-state`     | Get current auth state (`{ inProgress }`)     |
-| `auth:state-changed` | Event sent to renderer when auth state changes|
-| `api:fetch-data`     | GET api.epitest.eu/me/2025 with Bearer token  |
-| `api:fetch-details`  | GET /me/details/{test_run_id}                 |
-| `api:fetch-history`  | GET /me/2025/{module}/{project}               |
+| Handler              | Purpose                                        |
+| -------------------- | ---------------------------------------------- |
+| `auth:is-logged-in`  | Check if token exists                          |
+| `auth:start-login`   | Start login flow in hidden auth window         |
+| `auth:logout`        | Clear token from state                         |
+| `auth:reauth`        | Re-authenticate (used on 403 errors)           |
+| `auth:get-state`     | Get current auth state (`{ inProgress }`)      |
+| `auth:state-changed` | Event sent to renderer when auth state changes |
+| `api:fetch-data`     | GET api.epitest.eu/me/2025 with Bearer token   |
+| `api:fetch-details`  | GET /me/details/{test_run_id}                  |
+| `api:fetch-history`  | GET /me/2025/{module}/{project}                |
 
 ### State Management
 
@@ -154,4 +154,4 @@ import { IconRefresh, IconCheck } from "@tabler/icons-react"
 
 ## Animations
 
-Use `framer-motion` for all animations. Keep animations subtle (0.2-0.4s duration).
+Use `framer-motion` for all animations. Keep animations subtle.
