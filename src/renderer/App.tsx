@@ -1,11 +1,10 @@
 import { AnimatePresence, motion } from "framer-motion"
 import { useCallback, useEffect, useState } from "react"
 import "./App.css"
-import { Dashboard } from "./components/Dashboard"
-import { ErrorState } from "./components/ErrorState"
-import { LoadingState } from "./components/LoadingState"
-import { ProjectDetails } from "./components/ProjectDetails"
-import type { EpitestResult, ProcessedProject, View } from "./types"
+import { Dashboard } from "./components/dashboard"
+import { ErrorState, LoadingState } from "./components/ui"
+import { ProjectDetails } from "./components/project-details"
+import type { EpitestResult, ProcessedProject, View } from "@/shared/types"
 
 const { electronAPI } = window
 

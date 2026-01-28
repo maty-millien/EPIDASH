@@ -12,12 +12,8 @@ import type {
   DetailedExternalItem,
   SkillReport,
   TestResult
-} from "../types"
-
-const MODULE_NAMES: Record<string, string> = {
-  "G-PDG-300": "Pool Day",
-  "G-PRO-300": "Professional"
-}
+} from "@/shared/types"
+import { MODULE_NAMES } from "@/shared/constants/modules"
 
 function getRelativeDate(date: Date): string {
   const now = new Date()

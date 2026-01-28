@@ -1,6 +1,6 @@
 // TypeScript declarations for window.electronAPI
 
-import type { ElectronAPI } from "./preload"
+import type { ElectronAPI } from "./preload/index"
 
 declare global {
   interface Window {

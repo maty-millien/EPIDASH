@@ -1,13 +1,17 @@
 import { IconRefresh } from "@tabler/icons-react"
 import { motion } from "framer-motion"
 import { useEffect, useMemo, useRef, useState } from "react"
-import type { EpitestResult, FilterStatus, ProcessedProject } from "../types"
+import type {
+  EpitestResult,
+  FilterStatus,
+  ProcessedProject
+} from "@/shared/types"
 import {
   calculateSummary,
   filterProjects,
   getUniqueModules,
   processAllProjects
-} from "../utils/processData"
+} from "../../utils/processData"
 import { FilterBar } from "./FilterBar"
 import { ProjectCard } from "./ProjectCard"
 import { SummaryCards } from "./SummaryCards"

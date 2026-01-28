@@ -5,7 +5,7 @@ import type {
   HistoryPoint,
   ProcessedProject,
   ProjectDetailsResponse
-} from "../../types"
+} from "@/shared/types"
 import {
   extractConsoleOutput,
   extractCoverage,

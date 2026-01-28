@@ -25,6 +25,76 @@ bun run make           # Create distributable installers
 - **Package Manager**: Bun
 - **Build Tool**: Electron Forge
 
+## Project Structure (MUST FOLLOW)
+
+```
+src/
+├── main/                    # Electron main process (Node.js)
+│   ├── index.ts             # Entry point
+│   ├── api.ts               # API calls to epitest.eu
+│   ├── auth.ts              # Authentication flow
+│   ├── ipc.ts               # IPC handlers
+│   ├── menu.ts              # App menu
+│   └── state.ts             # Token state
+│
+├── preload/                 # Preload script (IPC bridge)
+│   └── index.ts
+│
+├── renderer/                # React frontend (browser context)
+│   ├── components/
+│   │   ├── ui/              # Reusable UI primitives (buttons, loaders, etc.)
+│   │   ├── dashboard/       # Dashboard view components
+│   │   └── project-details/ # Project details view components
+│   ├── utils/               # Utility functions for renderer
+│   ├── App.tsx              # Root React component
+│   ├── App.css              # Global styles
+│   └── index.tsx            # React entry point
+│
+├── shared/                  # Shared between main and renderer
+│   ├── constants/           # Configuration constants
+│   └── types/               # TypeScript type definitions
+│
+└── electron.d.ts            # Window.electronAPI type declarations
+```
+
+### Where to Put New Code
+
+| Type of Code                   | Location                               | Example                      |
+| ------------------------------ | -------------------------------------- | ---------------------------- |
+| New React component (reusable) | `src/renderer/components/ui/`          | LoadingSpinner, Button       |
+| New React component (feature)  | `src/renderer/components/{feature}/`   | SettingsPanel                |
+| New view/page                  | `src/renderer/components/{view-name}/` | Create new folder            |
+| Utility functions (React)      | `src/renderer/utils/`                  | formatDate, processData      |
+| TypeScript types               | `src/shared/types/`                    | API types, UI types          |
+| Constants/config               | `src/shared/constants/`                | Color mappings, module names |
+| Electron main process code     | `src/main/`                            | New IPC handlers             |
+| New IPC handler                | `src/main/ipc.ts`                      | Add to existing file         |
+
+### Rules
+
+1. **Never mix main and renderer code** - Main process runs in Node.js, renderer runs in browser
+2. **Use barrel exports** - Each component folder must have an `index.ts` exporting its components
+3. **Types go in shared** - All TypeScript interfaces/types go in `src/shared/types/`
+4. **Constants go in shared** - Reusable constants go in `src/shared/constants/`
+5. **Use path alias** - Import shared code with `@/shared/types` not relative paths
+6. **Feature folders** - Group related components in feature folders (e.g., `dashboard/`, `project-details/`)
+
+### Import Patterns
+
+```tsx
+// Types - always use path alias
+import type { ProcessedProject, FilterStatus } from "@/shared/types"
+
+// Constants - always use path alias
+import { MODULE_NAMES } from "@/shared/constants/modules"
+
+// UI components - import from barrel
+import { LoadingState, ErrorState } from "./components/ui"
+
+// Feature components - import from barrel
+import { Dashboard } from "./components/dashboard"
+```
+
 ## Architecture
 
 ### Authentication Flow
@@ -36,7 +106,7 @@ bun run make           # Create distributable installers
 5. Main process stores token, navigates back to app
 6. Frontend fetches data via IPC
 
-### IPC Handlers (src/ipc.ts)
+### IPC Handlers (`src/main/ipc.ts`)
 
 | Handler             | Purpose                                      |
 | ------------------- | -------------------------------------------- |
@@ -50,31 +120,22 @@ bun run make           # Create distributable installers
 
 ### State Management
 
-**Main Process** (`src/state.ts`):
+**Main Process** (`src/main/state.ts`):
 
 - `token: string | null` - JWT from Microsoft
 - `tokenExtracted: boolean` - prevents extraction loops
 
-**React** (`src/App.tsx`):
+**React** (`src/renderer/App.tsx`):
 
 - `isLoggedIn`, `apiData`, `fetching`, `error` state hooks
-
-## Key Files
-
-- `src/main.ts` - Electron main process entry
-- `src/preload.ts` - Secure IPC bridge (contextBridge)
-- `src/ipc.ts` - IPC handlers
-- `src/auth.ts` - Authentication logic and protocol handler
-- `src/api.ts` - API calls to epitest.eu
-- `src/App.tsx` - Main React UI
-- `forge.config.ts` - Electron Forge configuration
-- `docs/EPITEST_API.md` - Complete API documentation
 
 ## API
 
 **Endpoint**: `https://api.epitest.eu/me/2025`
 
 Returns array of test results with project info, skill breakdowns, and pass/fail counts.
+
+See `docs/EPITEST_API.md` for complete API documentation.
 
 ## Styling
 

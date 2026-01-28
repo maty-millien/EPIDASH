@@ -1,8 +1,8 @@
 import { useState } from "react"
 import { IconChevronDown } from "@tabler/icons-react"
 import { motion, AnimatePresence } from "framer-motion"
-import type { ProcessedProject } from "../types"
-import { MiniBar } from "./MiniBar"
+import type { ProcessedProject } from "@/shared/types"
+import { MiniBar } from "../ui"
 import { SkillsPanel } from "./SkillsPanel"
 
 interface ProjectCardProps {

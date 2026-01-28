@@ -1,5 +1,5 @@
 import { IconAlertTriangle, IconCheck } from "@tabler/icons-react"
-import type { ProcessedProject } from "../../types"
+import type { ProcessedProject } from "@/shared/types"
 
 interface SummaryCardsProps {
   project: ProcessedProject

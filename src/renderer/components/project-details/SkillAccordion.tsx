@@ -6,7 +6,7 @@ import {
 } from "@tabler/icons-react"
 import { AnimatePresence, motion } from "framer-motion"
 import { useState } from "react"
-import type { TestResult } from "../../types"
+import type { TestResult } from "@/shared/types"
 
 interface SkillAccordionProps {
   skillName: string

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion"
-import type { ProjectStatus } from "../types"
+import type { ProjectStatus } from "@/shared/types"
 
 interface MiniBarProps {
   passed: number

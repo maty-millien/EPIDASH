@@ -1,4 +1,4 @@
-import type { ProjectStatus } from "../types"
+import type { ProjectStatus } from "@/shared/types"
 
 const statusStyles: Record<ProjectStatus, string> = {
   perfect: "bg-pass shadow-[0_0_8px_var(--color-pass)]",
