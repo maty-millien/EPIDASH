@@ -14,7 +14,7 @@ const config: ForgeConfig = {
     executableName: "epidash",
     appBundleId: "com.maty.epidash",
     asar: true,
-    icon: "./resources/icon",
+    icon: "./assets/icon",
     protocols: [
       {
         name: "EPIDASH Protocol",
@@ -25,18 +25,17 @@ const config: ForgeConfig = {
   rebuildConfig: {},
   makers: [
     new MakerSquirrel({
-      name: "EPIDASH",
-      setupIcon: "./resources/icon.ico"
+      name: "EPIDASH"
     }),
     new MakerZIP({}, ["darwin"]),
     new MakerRpm({
       options: {
-        icon: "./resources/icon.png"
+        icon: "./assets/icon.png"
       }
     }),
     new MakerDeb({
       options: {
-        icon: "./resources/icon.png"
+        icon: "./assets/icon.png"
       }
     })
   ],
