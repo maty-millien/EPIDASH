@@ -77,7 +77,7 @@ const config: ForgeConfig = {
         owner: "maty-millien",
         name: "EPIDASH"
       },
-      draft: true
+      draft: false
     })
   ]
 }

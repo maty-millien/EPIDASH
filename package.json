@@ -1,7 +1,7 @@
 {
   "name": "epidash",
   "productName": "EPIDASH",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Epitech test results dashboard",
   "main": ".vite/build/main.js",
   "private": true,
@@ -10,6 +10,9 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "dotenv -- electron-forge publish",
+    "release": "npm version patch -m 'release: v%s' && git push && git push --tags",
+    "release:minor": "npm version minor -m 'release: v%s' && git push && git push --tags",
+    "release:major": "npm version major -m 'release: v%s' && git push && git push --tags",
     "lint": "eslint --ext .ts,.tsx .",
     "format": "eslint --ext .ts,.tsx . --fix && prettier --write \"src/**/*.{ts,tsx}\""
   },
