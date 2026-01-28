@@ -3,7 +3,9 @@ import { Dashboard } from "@/frontend/components/dashboard/Dashboard"
 import { ProjectDetails } from "@/frontend/components/project-details/ProjectDetails"
 import { ErrorState } from "@/frontend/components/ui/ErrorState"
 import { LoadingState } from "@/frontend/components/ui/LoadingState"
+import { UpdateNotification } from "@/frontend/components/ui/UpdateNotification"
 import type { EpitestResult } from "@/shared/types/api"
+import type { UpdateInfo } from "@/shared/types/update"
 import type { ProcessedProject, View } from "@/shared/types/ui"
 import { AnimatePresence, motion } from "framer-motion"
 import { useCallback, useEffect, useState } from "react"
@@ -18,6 +20,7 @@ function App() {
   const [apiData, setApiData] = useState<EpitestResult[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [currentView, setCurrentView] = useState<View>({ type: "dashboard" })
+  const [updateReady, setUpdateReady] = useState<UpdateInfo | null>(null)
 
   const handleSelectProject = useCallback((project: ProcessedProject) => {
     setCurrentView({ type: "project-details", project })
@@ -83,7 +86,21 @@ function App() {
     initAuth()
   }, [])
 
-  // Fetch data automatically when logged in
+  useEffect(() => {
+    const unsubscribe = electronAPI.onUpdateDownloaded((info) => {
+      setUpdateReady(info)
+    })
+    return unsubscribe
+  }, [])
+
+  const handleInstallUpdate = useCallback(() => {
+    electronAPI.installUpdate()
+  }, [])
+
+  const handleDismissUpdate = useCallback(() => {
+    setUpdateReady(null)
+  }, [])
+
   useEffect(() => {
     if (!isLoggedIn) return
     fetchData()
@@ -162,6 +179,16 @@ function App() {
           )}
         </AnimatePresence>
       </main>
+
+      <AnimatePresence>
+        {updateReady && (
+          <UpdateNotification
+            info={updateReady}
+            onInstall={handleInstallUpdate}
+            onDismiss={handleDismissUpdate}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }

@@ -4,6 +4,11 @@ import path from "node:path"
 import { registerProtocolHandler, setupNavigationHandlers } from "@/core/auth"
 import { setupIpcHandlers } from "@/core/ipc"
 import { createMenu } from "@/core/menu"
+import {
+  initializeUpdater,
+  checkForUpdates,
+  startPeriodicChecks
+} from "@/core/updater"
 
 // Suppress Chromium GPU errors from stderr (log-level 3 = fatal only)
 app.commandLine.appendSwitch("log-level", "3")
@@ -72,6 +77,14 @@ app.whenReady().then(() => {
   setupIpcHandlers()
   createMenu()
   createWindow()
+
+  if (!MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+    initializeUpdater()
+    setTimeout(() => {
+      checkForUpdates()
+      startPeriodicChecks()
+    }, 3000)
+  }
 })
 
 app.on("window-all-closed", () => {

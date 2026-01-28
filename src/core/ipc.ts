@@ -8,6 +8,12 @@ import {
   fetchProjectDetails,
   fetchProjectHistory
 } from "@/core/api"
+import {
+  checkForUpdates,
+  installUpdate,
+  getUpdateState,
+  simulateUpdate
+} from "@/core/updater"
 
 export function notifyAuthStateChange(inProgress: boolean): void {
   BrowserWindow.getAllWindows().forEach((window) => {
@@ -58,4 +64,20 @@ export function setupIpcHandlers(): void {
       return fetchProjectHistory(token, moduleCode, projectSlug)
     }
   )
+
+  ipcMain.handle("update:get-state", () => {
+    return getUpdateState()
+  })
+
+  ipcMain.handle("update:check", () => {
+    checkForUpdates()
+  })
+
+  ipcMain.handle("update:install", () => {
+    installUpdate()
+  })
+
+  ipcMain.handle("update:simulate", () => {
+    simulateUpdate()
+  })
 }

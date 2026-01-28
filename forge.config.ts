@@ -4,6 +4,7 @@ import { MakerSquirrel } from "@electron-forge/maker-squirrel"
 import { MakerZIP } from "@electron-forge/maker-zip"
 import { FusesPlugin } from "@electron-forge/plugin-fuses"
 import { VitePlugin } from "@electron-forge/plugin-vite"
+import { PublisherGithub } from "@electron-forge/publisher-github"
 import type { ForgeConfig } from "@electron-forge/shared-types"
 import { FuseV1Options, FuseVersion } from "@electron/fuses"
 
@@ -68,6 +69,15 @@ const config: ForgeConfig = {
       [FuseV1Options.EnableNodeCliInspectArguments]: false,
       [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
       [FuseV1Options.OnlyLoadAppFromAsar]: true
+    })
+  ],
+  publishers: [
+    new PublisherGithub({
+      repository: {
+        owner: "maty-millien",
+        name: "EPIDASH"
+      },
+      draft: true
     })
   ]
 }

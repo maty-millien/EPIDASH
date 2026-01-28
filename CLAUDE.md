@@ -18,7 +18,17 @@ Never run dev servers (`bun start`). The user will run them manually.
 bun start              # Development with hot reload
 bun run package        # Package the app
 bun run make           # Create distributable installers
+bun run publish        # Publish to GitHub releases (requires .env with GITHUB_TOKEN)
 ```
+
+## Releasing Updates
+
+The app uses `electron-updater` for auto-updates via GitHub releases.
+
+1. Copy `.env.example` to `.env` and add your GitHub token
+2. Update version in `package.json`
+3. Run `bun run publish` to create a draft release
+4. Review and publish the draft on GitHub
 
 ## Tech Stack
 
@@ -118,6 +128,12 @@ import { Dashboard } from "./components/dashboard/Dashboard"
 | `api:fetch-data`     | GET api.epitest.eu/me/2025 with Bearer token   |
 | `api:fetch-details`  | GET /me/details/{test_run_id}                  |
 | `api:fetch-history`  | GET /me/2025/{module}/{project}                |
+| `update:get-state`   | Get current update state                       |
+| `update:check`       | Trigger manual update check                    |
+| `update:install`     | Quit and install downloaded update             |
+| `update:downloaded`  | Event sent when update is ready to install     |
+| `update:progress`    | Event sent with download progress percentage   |
+| `update:error`       | Event sent when update check/download fails    |
 
 ### State Management
 
