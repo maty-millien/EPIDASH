@@ -30,7 +30,7 @@ bun run make           # Create distributable installers
 ```
 src/
 ├── main/                    # Electron main process (Node.js)
-│   ├── index.ts             # Entry point
+│   ├── main.ts              # Entry point
 │   ├── api.ts               # API calls to epitest.eu
 │   ├── auth.ts              # Authentication flow
 │   ├── ipc.ts               # IPC handlers
@@ -38,7 +38,7 @@ src/
 │   └── state.ts             # Token state
 │
 ├── preload/                 # Preload script (IPC bridge)
-│   └── index.ts
+│   └── preload.ts
 │
 ├── renderer/                # React frontend (browser context)
 │   ├── components/
