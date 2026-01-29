@@ -11,7 +11,7 @@ import { FuseV1Options, FuseVersion } from "@electron/fuses"
 const config: ForgeConfig = {
   packagerConfig: {
     name: "EPIDASH",
-    executableName: "EPIDASH",
+    executableName: "epidash",
     appBundleId: "com.maty.epidash",
     asar: true,
     icon: "./assets/icon",
