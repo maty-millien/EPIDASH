@@ -15,6 +15,7 @@ const config: ForgeConfig = {
     appBundleId: "com.maty.epidash",
     asar: true,
     icon: "./assets/icon",
+    extraResource: ["./app-update.yml"],
     protocols: [
       {
         name: "EPIDASH Protocol",

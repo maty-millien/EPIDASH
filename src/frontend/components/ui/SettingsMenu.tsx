@@ -44,10 +44,14 @@ export function SettingsMenu() {
     const unsubError = electronAPI.onUpdateError((error) => {
       setUpdateState(prev => prev ? { ...prev, checking: false, downloading: false, error } : null)
     })
+    const unsubNotAvailable = electronAPI.onUpdateNotAvailable(() => {
+      setUpdateState(prev => prev ? { ...prev, checking: false, available: false } : null)
+    })
     return () => {
       unsubProgress()
       unsubDownloaded()
       unsubError()
+      unsubNotAvailable()
     }
   }, [])
 
@@ -57,10 +61,6 @@ export function SettingsMenu() {
       error: null, info: null, progress: null
     })
     await electronAPI.checkForUpdates()
-    setTimeout(async () => {
-      const state = await electronAPI.getUpdateState()
-      setUpdateState(state)
-    }, 2000)
   }
 
   const handleInstall = () => {
@@ -80,7 +80,7 @@ export function SettingsMenu() {
       return { icon: IconSparkles, text: `v${updateState.info.version} ready`, color: "text-pass", spin: false }
     }
     if (updateState.error) {
-      return { icon: IconAlertCircle, text: "Check failed", color: "text-fail", spin: false }
+      return { icon: IconAlertCircle, text: updateState.error, color: "text-fail", spin: false }
     }
     if (updateState.available === false && !updateState.checking) {
       return { icon: IconCheck, text: "Up to date", color: "text-pass", spin: false }
@@ -121,18 +121,18 @@ export function SettingsMenu() {
               </div>
 
               {status && (
-                <div className="mb-3 flex items-center gap-2">
+                <div className="mb-3 flex items-start gap-2">
                   {(() => {
                     const StatusIcon = status.icon
                     return (
                       <StatusIcon
                         size={14}
                         stroke={2}
-                        className={`${status.color} ${status.spin ? "animate-spin" : ""}`}
+                        className={`${status.color} ${status.spin ? "animate-spin" : ""} mt-0.5 shrink-0`}
                       />
                     )
                   })()}
-                  <span className={`text-sm ${status.color}`}>{status.text}</span>
+                  <span className={`text-sm ${status.color} break-words`}>{status.text}</span>
                 </div>
               )}
 

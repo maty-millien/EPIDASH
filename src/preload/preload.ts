@@ -27,6 +27,7 @@ export interface ElectronAPI {
   onUpdateDownloaded: (callback: (info: UpdateInfo) => void) => () => void
   onUpdateProgress: (callback: (progress: number) => void) => () => void
   onUpdateError: (callback: (error: string) => void) => () => void
+  onUpdateNotAvailable: (callback: () => void) => () => void
 }
 
 const electronAPI: ElectronAPI = {
@@ -80,6 +81,15 @@ const electronAPI: ElectronAPI = {
     ipcRenderer.on("update:error", handler)
     return () => {
       ipcRenderer.removeListener("update:error", handler)
+    }
+  },
+  onUpdateNotAvailable: (callback: () => void) => {
+    const handler = () => {
+      callback()
+    }
+    ipcRenderer.on("update:not-available", handler)
+    return () => {
+      ipcRenderer.removeListener("update:not-available", handler)
     }
   }
 }

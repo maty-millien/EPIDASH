@@ -88,7 +88,13 @@ export function initializeUpdater(): void {
 
 export function checkForUpdates(): void {
   autoUpdater.checkForUpdates().catch((err) => {
-    console.error("Update check failed:", err)
+    updateState = {
+      ...updateState,
+      checking: false,
+      downloading: false,
+      error: err.message || String(err)
+    }
+    notifyRenderer("update:error", updateState.error)
   })
 }
 
