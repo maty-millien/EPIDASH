@@ -1,7 +1,12 @@
 // IPC handlers (replaces Tauri #[tauri::command] functions)
 
 import { BrowserWindow, ipcMain } from "electron"
-import { getToken, isLoggedIn, getAuthInProgress } from "@/core/state"
+import {
+  getToken,
+  isLoggedIn,
+  getAuthInProgress,
+  waitForTokenChange
+} from "@/core/state"
 import { startLogin, logout, reauth } from "@/core/auth"
 import {
   fetchEpitestData,
@@ -15,13 +20,26 @@ import {
   simulateUpdate
 } from "@/core/updater"
 
-async function withReauthOn403<T>(apiCall: () => Promise<T>): Promise<T> {
+const REAUTH_TIMEOUT_MS = 60000
+
+async function withReauthOn403<T>(
+  apiCallFn: (token: string) => Promise<T>
+): Promise<T> {
+  const token = getToken()
+  if (!token) throw new Error("Not logged in")
+
   try {
-    return await apiCall()
+    return await apiCallFn(token)
   } catch (error) {
     if (String(error).includes("403")) {
       await reauth()
-      throw new Error("Session expired")
+      const newToken = await waitForTokenChange(REAUTH_TIMEOUT_MS)
+
+      if (!newToken) {
+        throw new Error("Session expired")
+      }
+
+      return await apiCallFn(newToken)
     }
     throw error
   }
@@ -57,23 +75,17 @@ export function setupIpcHandlers(): void {
 
   // API handlers
   ipcMain.handle("api:fetch-data", async () => {
-    const token = getToken()
-    if (!token) throw new Error("Not logged in")
-    return withReauthOn403(() => fetchEpitestData(token))
+    return withReauthOn403((token) => fetchEpitestData(token))
   })
 
   ipcMain.handle("api:fetch-details", async (_event, testRunId: number) => {
-    const token = getToken()
-    if (!token) throw new Error("Not logged in")
-    return withReauthOn403(() => fetchProjectDetails(token, testRunId))
+    return withReauthOn403((token) => fetchProjectDetails(token, testRunId))
   })
 
   ipcMain.handle(
     "api:fetch-history",
     async (_event, moduleCode: string, projectSlug: string) => {
-      const token = getToken()
-      if (!token) throw new Error("Not logged in")
-      return withReauthOn403(() =>
+      return withReauthOn403((token) =>
         fetchProjectHistory(token, moduleCode, projectSlug)
       )
     }

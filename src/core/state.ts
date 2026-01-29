@@ -12,12 +12,33 @@ const state: AppState = {
   authInProgress: false
 }
 
+let tokenWaiters: Array<(token: string | null) => void> = []
+
 export function getToken(): string | null {
   return state.token
 }
 
 export function setToken(token: string | null): void {
   state.token = token
+  const waiters = tokenWaiters
+  tokenWaiters = []
+  waiters.forEach((resolve) => resolve(token))
+}
+
+export function waitForTokenChange(timeoutMs: number): Promise<string | null> {
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      tokenWaiters = tokenWaiters.filter((w) => w !== resolver)
+      reject(new Error("Token wait timeout"))
+    }, timeoutMs)
+
+    const resolver = (token: string | null) => {
+      clearTimeout(timeout)
+      resolve(token)
+    }
+
+    tokenWaiters.push(resolver)
+  })
 }
 
 export function isLoggedIn(): boolean {

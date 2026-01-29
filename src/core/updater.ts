@@ -118,7 +118,9 @@ export function stopPeriodicChecks(): void {
 }
 
 export function installUpdate(): void {
-  autoUpdater.quitAndInstall(false, true)
+  setImmediate(() => {
+    autoUpdater.quitAndInstall(false, true)
+  })
 }
 
 export function getUpdateState(): UpdateState {

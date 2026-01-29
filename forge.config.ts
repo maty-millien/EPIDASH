@@ -21,7 +21,10 @@ const config: ForgeConfig = {
         name: "EPIDASH Protocol",
         schemes: ["epidash"]
       }
-    ]
+    ],
+    extendInfo: {
+      CFBundleDisplayName: "EPIDASH"
+    }
   },
   rebuildConfig: {},
   makers: [
