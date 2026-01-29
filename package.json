@@ -10,7 +10,7 @@
     "package": "electron-forge package",
     "test": "electron-forge package && rm -rf /Applications/EPIDASH.app && cp -R out/*/EPIDASH.app /Applications/ && open /Applications/EPIDASH.app && rm -rf out/",
     "make": "electron-forge make",
-    "gen-latest-mac-yml": "bun scripts/gen-latest-mac-yml.ts",
+    "publish": "dotenv -- electron-forge publish && bun scripts/gen-latest-mac-yml.ts",
     "release": "npm version patch -m 'release: v%s' && git push && git push --tags",
     "release:minor": "npm version minor -m 'release: v%s' && git push && git push --tags",
     "release:major": "npm version major -m 'release: v%s' && git push && git push --tags",
