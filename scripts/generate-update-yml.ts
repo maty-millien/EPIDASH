@@ -3,6 +3,11 @@ import { readFileSync, writeFileSync, statSync } from "fs"
 import { execSync } from "child_process"
 import { join } from "path"
 
+if (process.platform !== "darwin") {
+  console.log(`Skipping latest-mac.yml generation on ${process.platform} (only runs on macOS)`)
+  process.exit(0)
+}
+
 const ROOT = join(import.meta.dir, "..")
 const pkg = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf-8"))
 const version = pkg.version
