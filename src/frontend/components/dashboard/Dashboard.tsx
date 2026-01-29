@@ -1,6 +1,8 @@
+import { ActivityTrends } from "@/frontend/components/dashboard/ActivityTrends";
 import { FilterBar } from "@/frontend/components/dashboard/FilterBar";
 import { ProjectCard } from "@/frontend/components/dashboard/ProjectCard";
 import { SummaryCards } from "@/frontend/components/dashboard/SummaryCards";
+import { AppFooter } from "@/frontend/components/ui/AppFooter";
 import { SettingsMenu } from "@/frontend/components/ui/SettingsMenu";
 import {
   calculateSummary,
@@ -21,6 +23,7 @@ interface DashboardProps {
   onSelectProject: (project: ProcessedProject) => void;
   selectedYear: number;
   onYearChange: (year: number) => void;
+  lastSyncTime: Date | null;
 }
 
 const containerVariants = {
@@ -49,6 +52,7 @@ export function Dashboard({
   onSelectProject,
   selectedYear,
   onYearChange,
+  lastSyncTime,
 }: DashboardProps) {
   const [statusFilter, setStatusFilter] = useState<FilterStatus>("all");
   const [moduleFilter, setModuleFilter] = useState<string | null>(null);
@@ -140,7 +144,7 @@ export function Dashboard({
 
       {/* Project List */}
       <motion.div
-        className="flex flex-col gap-3"
+        className="grid grid-cols-1 gap-3 xl:grid-cols-2"
         variants={containerVariants}
         initial={hasAnimated.current ? false : "hidden"}
         animate="show"
@@ -161,6 +165,12 @@ export function Dashboard({
           ))
         )}
       </motion.div>
+
+      {/* Activity Trends */}
+      <ActivityTrends projects={projects} />
+
+      {/* Footer */}
+      <AppFooter lastSyncTime={lastSyncTime} />
     </motion.div>
   );
 }

@@ -1,97 +1,97 @@
-import { AnimatePresence, motion } from "framer-motion"
-import { useEffect, useState } from "react"
-import type { EpitestResult, ProjectDetailsResponse } from "@/shared/types/api"
-import type { HistoryPoint, ProcessedProject } from "@/shared/types/ui"
+import { ConsoleOutput } from "@/frontend/components/project-details/ConsoleOutput";
+import { CoveragePanel } from "@/frontend/components/project-details/CoveragePanel";
+import { DetailsHeader } from "@/frontend/components/project-details/DetailsHeader";
+import { ProgressionChart } from "@/frontend/components/project-details/ProgressionChart";
+import { SkillAccordion } from "@/frontend/components/project-details/SkillAccordion";
+import { SummaryCards } from "@/frontend/components/project-details/SummaryCards";
 import {
   extractConsoleOutput,
   extractCoverage,
   getAllTestsFromDetails,
-  processProjectHistory
-} from "@/frontend/utils/processData"
-import { ConsoleOutput } from "@/frontend/components/project-details/ConsoleOutput"
-import { CoveragePanel } from "@/frontend/components/project-details/CoveragePanel"
-import { DetailsHeader } from "@/frontend/components/project-details/DetailsHeader"
-import { ProgressionChart } from "@/frontend/components/project-details/ProgressionChart"
-import { SkillAccordion } from "@/frontend/components/project-details/SkillAccordion"
-import { SummaryCards } from "@/frontend/components/project-details/SummaryCards"
+  processProjectHistory,
+} from "@/frontend/utils/processData";
+import type { EpitestResult, ProjectDetailsResponse } from "@/shared/types/api";
+import type { HistoryPoint, ProcessedProject } from "@/shared/types/ui";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
-const { electronAPI } = window
+const { electronAPI } = window;
 
 function SkeletonBox({ className }: { className: string }) {
-  return <div className={`animate-shimmer rounded ${className}`} />
+  return <div className={`animate-shimmer rounded ${className}`} />;
 }
 
 interface ProjectDetailsProps {
-  project: ProcessedProject
-  onBack: () => void
-  selectedYear: number
+  project: ProcessedProject;
+  onBack: () => void;
+  selectedYear: number;
 }
 
 export function ProjectDetails({
   project,
   onBack,
-  selectedYear
+  selectedYear,
 }: ProjectDetailsProps) {
-  const [details, setDetails] = useState<ProjectDetailsResponse | null>(null)
-  const [history, setHistory] = useState<HistoryPoint[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [details, setDetails] = useState<ProjectDetailsResponse | null>(null);
+  const [history, setHistory] = useState<HistoryPoint[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchData() {
-      setLoading(true)
-      setError(null)
+      setLoading(true);
+      setError(null);
 
       try {
         const [detailsRes, historyRes] = await Promise.all([
           electronAPI.fetchProjectDetails(
-            project.testRunId
+            project.testRunId,
           ) as Promise<ProjectDetailsResponse>,
           electronAPI.fetchProjectHistory(
             project.moduleCode,
             project.slug,
-            selectedYear
-          ) as Promise<EpitestResult[]>
-        ])
+            selectedYear,
+          ) as Promise<EpitestResult[]>,
+        ]);
 
-        setDetails(detailsRes)
-        setHistory(processProjectHistory(historyRes))
+        setDetails(detailsRes);
+        setHistory(processProjectHistory(historyRes));
       } catch (err) {
-        setError(String(err))
+        setError(String(err));
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
-    fetchData()
-  }, [project.testRunId, project.moduleCode, project.slug, selectedYear])
+    fetchData();
+  }, [project.testRunId, project.moduleCode, project.slug, selectedYear]);
 
   const consoleOutput = details
     ? extractConsoleOutput(details.externalItems)
-    : null
+    : null;
   const coverage = details
     ? extractCoverage(details.externalItems)
-    : { lines: 0, branches: 0 }
-  const skillTests = details ? getAllTestsFromDetails(details) : []
+    : { lines: 0, branches: 0 };
+  const skillTests = details ? getAllTestsFromDetails(details) : [];
 
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
-      transition: { staggerChildren: 0.08 }
-    }
-  }
+      transition: { staggerChildren: 0.08 },
+    },
+  };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 16 },
     show: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.35, ease: "easeOut" as const }
-    }
-  }
+      transition: { duration: 0.35, ease: "easeOut" as const },
+    },
+  };
 
-  const contentTransition = { duration: 0.25, ease: "easeOut" as const }
+  const contentTransition = { duration: 0.25, ease: "easeOut" as const };
 
   if (error) {
     return (
@@ -99,7 +99,7 @@ export function ProjectDetails({
         <DetailsHeader project={project} gitCommit={null} onBack={onBack} />
         <div className="text-fail mt-16 text-center text-sm">{error}</div>
       </div>
-    )
+    );
   }
 
   return (
@@ -126,7 +126,7 @@ export function ProjectDetails({
               transition={contentTransition}
             >
               <SkeletonBox className="mb-4 h-4 w-24" />
-              <SkeletonBox className="h-[358px] rounded-xl" />
+              <SkeletonBox className="h-89.5 rounded-xl" />
             </motion.div>
           ) : history.length > 1 ? (
             <motion.div
@@ -235,5 +235,5 @@ export function ProjectDetails({
         </motion.div>
       )}
     </motion.div>
-  )
+  );
 }

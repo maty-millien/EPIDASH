@@ -29,6 +29,8 @@ export interface ElectronAPI {
   onUpdateProgress: (callback: (progress: number) => void) => () => void
   onUpdateError: (callback: (error: string) => void) => () => void
   onUpdateNotAvailable: (callback: () => void) => () => void
+
+  openExternal: (url: string) => Promise<void>
 }
 
 const electronAPI: ElectronAPI = {
@@ -92,7 +94,9 @@ const electronAPI: ElectronAPI = {
     return () => {
       ipcRenderer.removeListener("update:not-available", handler)
     }
-  }
+  },
+
+  openExternal: (url: string) => ipcRenderer.invoke("shell:open-external", url)
 }
 
 contextBridge.exposeInMainWorld("electronAPI", electronAPI)

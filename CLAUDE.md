@@ -146,6 +146,7 @@ Window state is managed in `src/core/window.ts`.
 | `update:downloaded`  | Event sent when update is ready to install     |
 | `update:progress`    | Event sent with download progress percentage   |
 | `update:error`       | Event sent when update check/download fails    |
+| `shell:open-external`| Open URL in system default browser             |
 
 ### State Management
 

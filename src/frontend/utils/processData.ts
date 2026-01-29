@@ -319,3 +319,53 @@ export function extractCoverage(externalItems: DetailedExternalItem[]): {
     branches: branchCoverage?.value ?? 0
   }
 }
+
+export interface ActivityTrendPoint {
+  date: Date
+  passRate: number
+  testRuns: number
+}
+
+export function aggregateActivityTrends(
+  projects: ProcessedProject[],
+  range: "7d" | "30d" | "all"
+): ActivityTrendPoint[] {
+  const now = new Date()
+  const cutoff = new Date()
+
+  if (range === "7d") {
+    cutoff.setDate(now.getDate() - 7)
+  } else if (range === "30d") {
+    cutoff.setDate(now.getDate() - 30)
+  } else {
+    cutoff.setFullYear(2000)
+  }
+
+  const filtered = projects.filter((p) => p.date >= cutoff)
+
+  const grouped = new Map<string, { passRates: number[]; count: number }>()
+
+  for (const project of filtered) {
+    const dateKey = project.date.toISOString().split("T")[0]
+    const existing = grouped.get(dateKey)
+    if (existing) {
+      existing.passRates.push(project.passRate)
+      existing.count++
+    } else {
+      grouped.set(dateKey, { passRates: [project.passRate], count: 1 })
+    }
+  }
+
+  const result: ActivityTrendPoint[] = []
+  for (const [dateStr, data] of grouped) {
+    const avgPassRate =
+      data.passRates.reduce((a, b) => a + b, 0) / data.passRates.length
+    result.push({
+      date: new Date(dateStr),
+      passRate: avgPassRate,
+      testRuns: data.count
+    })
+  }
+
+  return result.sort((a, b) => a.date.getTime() - b.date.getTime())
+}

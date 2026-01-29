@@ -1,4 +1,4 @@
-import { ipcMain } from "electron"
+import { ipcMain, shell } from "electron"
 import {
   getToken,
   isLoggedIn,
@@ -105,5 +105,9 @@ export function setupIpcHandlers(): void {
 
   ipcMain.handle("update:simulate", () => {
     simulateUpdate()
+  })
+
+  ipcMain.handle("shell:open-external", (_event, url: string) => {
+    shell.openExternal(url)
   })
 }

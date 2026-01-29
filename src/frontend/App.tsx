@@ -22,6 +22,7 @@ function App() {
   const [currentView, setCurrentView] = useState<View>({ type: "dashboard" });
   const [updateReady, setUpdateReady] = useState<UpdateInfo | null>(null);
   const [selectedYear, setSelectedYear] = useState(2025);
+  const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
 
   const handleSelectProject = useCallback((project: ProcessedProject) => {
     setCurrentView({ type: "project-details", project });
@@ -43,6 +44,7 @@ function App() {
         selectedYear,
       )) as EpitestResult[];
       setApiData(data);
+      setLastSyncTime(new Date());
     } catch (err) {
       setError(String(err));
     } finally {
@@ -171,6 +173,7 @@ function App() {
                 onSelectProject={handleSelectProject}
                 selectedYear={selectedYear}
                 onYearChange={handleYearChange}
+                lastSyncTime={lastSyncTime}
               />
             </motion.div>
           )}
