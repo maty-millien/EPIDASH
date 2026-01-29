@@ -1,7 +1,7 @@
 {
   "name": "epidash",
   "productName": "EPIDASH",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "A sleek desktop dashboard for viewing your Epitest results",
   "main": ".vite/build/main.js",
   "private": true,
