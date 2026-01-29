@@ -37,14 +37,7 @@ function App() {
       const data = (await electronAPI.fetchEpitestData()) as EpitestResult[]
       setApiData(data)
     } catch (err) {
-      const errorMsg = String(err)
-      // Token expired or invalid - clear session and trigger re-login
-      if (errorMsg.includes("403")) {
-        setIsLoggedIn(false)
-        await electronAPI.reauth()
-      } else {
-        setError(errorMsg)
-      }
+      setError(String(err))
     } finally {
       setFetching(false)
     }

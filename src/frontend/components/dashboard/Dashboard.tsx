@@ -12,6 +12,7 @@ import {
 import { FilterBar } from "@/frontend/components/dashboard/FilterBar"
 import { ProjectCard } from "@/frontend/components/dashboard/ProjectCard"
 import { SummaryCards } from "@/frontend/components/dashboard/SummaryCards"
+import { SettingsMenu } from "@/frontend/components/ui/SettingsMenu"
 
 interface DashboardProps {
   data: EpitestResult[]
@@ -95,6 +96,7 @@ export function Dashboard({
             </motion.div>
             Refresh
           </button>
+          <SettingsMenu />
         </div>
       </div>
 

@@ -241,6 +241,7 @@ export async function reauth(): Promise<void> {
   )
 
   setTokenExtracted(false)
+  setTimeout(() => extractToken(window), 200)
 }
 
 export async function clearSessionData(): Promise<void> {
