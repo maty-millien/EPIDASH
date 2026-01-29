@@ -1,4 +1,4 @@
-import { IconRefresh } from "@tabler/icons-react"
+import { IconCalendar, IconRefresh } from "@tabler/icons-react"
 import { motion } from "framer-motion"
 import { useEffect, useMemo, useRef, useState } from "react"
 import type { EpitestResult } from "@/shared/types/api"
@@ -19,6 +19,8 @@ interface DashboardProps {
   onRefresh: () => void
   isRefreshing: boolean
   onSelectProject: (project: ProcessedProject) => void
+  selectedYear: number
+  onYearChange: (year: number) => void
 }
 
 const containerVariants = {
@@ -38,11 +40,15 @@ const itemVariants = {
   }
 }
 
+const YEARS = Array.from({ length: 12 }, (_, i) => 2025 - i)
+
 export function Dashboard({
   data,
   onRefresh,
   isRefreshing,
-  onSelectProject
+  onSelectProject,
+  selectedYear,
+  onYearChange
 }: DashboardProps) {
   const [statusFilter, setStatusFilter] = useState<FilterStatus>("all")
   const [moduleFilter, setModuleFilter] = useState<string | null>(null)
@@ -78,6 +84,24 @@ export function Dashboard({
           EPIDASH
         </h1>
         <div className="flex items-center gap-2">
+          <div className="border-border bg-elevated hover:border-border-medium hover:bg-hover relative flex items-center gap-2 rounded-lg border transition-all duration-150">
+            <IconCalendar
+              size={16}
+              stroke={2}
+              className="text-text-secondary pointer-events-none absolute left-3"
+            />
+            <select
+              value={selectedYear}
+              onChange={(e) => onYearChange(Number(e.target.value))}
+              className="text-text-secondary bg-transparent py-2 pr-3 pl-9 font-sans text-sm font-medium outline-none [-webkit-appearance:none] [appearance:none]"
+            >
+              {YEARS.map((year) => (
+                <option key={year} value={year} className="bg-elevated">
+                  {year}
+                </option>
+              ))}
+            </select>
+          </div>
           <button
             onClick={onRefresh}
             disabled={isRefreshing}

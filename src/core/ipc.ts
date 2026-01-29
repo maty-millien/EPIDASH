@@ -1,6 +1,4 @@
-// IPC handlers (replaces Tauri #[tauri::command] functions)
-
-import { BrowserWindow, ipcMain } from "electron"
+import { ipcMain } from "electron"
 import {
   getToken,
   isLoggedIn,
@@ -19,6 +17,7 @@ import {
   getUpdateState,
   simulateUpdate
 } from "@/core/updater"
+import { getAppView } from "@/core/window"
 
 const REAUTH_TIMEOUT_MS = 60000
 
@@ -46,9 +45,10 @@ async function withReauthOn403<T>(
 }
 
 export function notifyAuthStateChange(inProgress: boolean): void {
-  BrowserWindow.getAllWindows().forEach((window) => {
-    window.webContents.send("auth:state-changed", { inProgress })
-  })
+  const appView = getAppView()
+  if (appView) {
+    appView.webContents.send("auth:state-changed", { inProgress })
+  }
 }
 
 export function setupIpcHandlers(): void {
@@ -74,8 +74,8 @@ export function setupIpcHandlers(): void {
   })
 
   // API handlers
-  ipcMain.handle("api:fetch-data", async () => {
-    return withReauthOn403((token) => fetchEpitestData(token))
+  ipcMain.handle("api:fetch-data", async (_event, year: number) => {
+    return withReauthOn403((token) => fetchEpitestData(token, year))
   })
 
   ipcMain.handle("api:fetch-details", async (_event, testRunId: number) => {
@@ -84,9 +84,9 @@ export function setupIpcHandlers(): void {
 
   ipcMain.handle(
     "api:fetch-history",
-    async (_event, moduleCode: string, projectSlug: string) => {
+    async (_event, moduleCode: string, projectSlug: string, year: number) => {
       return withReauthOn403((token) =>
-        fetchProjectHistory(token, moduleCode, projectSlug)
+        fetchProjectHistory(token, moduleCode, projectSlug, year)
       )
     }
   )

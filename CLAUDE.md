@@ -41,13 +41,15 @@ The app uses `electron-updater` for auto-updates via GitHub releases.
 
 ```
 src/
-├── main/                    # Electron main process (Node.js)
+├── core/                    # Electron main process (Node.js)
 │   ├── main.ts              # Entry point
 │   ├── api.ts               # API calls to epitest.eu
 │   ├── auth.ts              # Authentication flow
 │   ├── ipc.ts               # IPC handlers
 │   ├── menu.ts              # App menu
-│   └── state.ts             # Token state
+│   ├── state.ts             # Token state
+│   ├── updater.ts           # Auto-update logic
+│   └── window.ts            # Window state (BaseWindow + views)
 │
 ├── preload/                 # Preload script (IPC bridge)
 │   └── preload.ts
@@ -104,15 +106,24 @@ import { Dashboard } from "./components/dashboard/Dashboard"
 
 ## Architecture
 
+### Window Architecture
+
+The app uses `BaseWindow` + `WebContentsView` (modern Electron pattern):
+- `mainWindow` - The container window (`BaseWindow`)
+- `appView` - React app view (`WebContentsView`)
+- `authView` - Auth overlay view (`WebContentsView`) - shown during login
+
+Window state is managed in `src/core/window.ts`.
+
 ### Authentication Flow
 
 1. User opens app → React checks if token exists via IPC
-2. If not logged in → React calls `startLogin()`, shows `AuthLoadingState`
-3. Main process creates hidden auth window, loads `myresults.epitest.eu`
-4. Auth window becomes visible only for `login.microsoftonline.com` (Microsoft login)
+2. If not logged in → React calls `startLogin()`, shows `LoadingState`
+3. Main process creates auth view overlay, loads `myresults.epitest.eu`
+4. Auth view overlays the React app for Microsoft login
 5. After Microsoft SSO completes, JavaScript extracts JWT from localStorage
 6. Token passed via custom URL scheme: `epidash://token/{encoded_token}`
-7. Main process stores token, closes auth window, notifies React via `auth:state-changed`
+7. Main process stores token, hides auth view, notifies React via `auth:state-changed`
 8. React receives notification, fetches data via IPC
 
 ### IPC Handlers (`src/core/ipc.ts`)
@@ -120,7 +131,7 @@ import { Dashboard } from "./components/dashboard/Dashboard"
 | Handler              | Purpose                                        |
 | -------------------- | ---------------------------------------------- |
 | `auth:is-logged-in`  | Check if token exists                          |
-| `auth:start-login`   | Start login flow in hidden auth window         |
+| `auth:start-login`   | Start login flow with auth view overlay        |
 | `auth:logout`        | Clear token from state                         |
 | `auth:reauth`        | Re-authenticate (used on 403 errors)           |
 | `auth:get-state`     | Get current auth state (`{ inProgress }`)      |

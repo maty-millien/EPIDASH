@@ -1,7 +1,4 @@
-// Authentication flow and protocol handler (replaces Tauri's on_navigation)
-
-import { app, BrowserWindow, session } from "electron"
-import path from "node:path"
+import { app, BaseWindow, WebContentsView, session } from "electron"
 import {
   setToken,
   setTokenExtracted,
@@ -10,51 +7,50 @@ import {
   setAuthInProgress
 } from "@/core/state"
 import { notifyAuthStateChange } from "@/core/ipc"
+import { getMainWindow } from "@/core/window"
 
-let authWindow: BrowserWindow | null = null
+let authView: WebContentsView | null = null
+let authViewVisible = false
 
-function getMainWindow(): BrowserWindow | null {
-  return BrowserWindow.getAllWindows().find((w) => w !== authWindow) ?? null
+function updateAuthViewBounds(): void {
+  const mainWindow = getMainWindow()
+  if (!mainWindow || !authView) return
+  const bounds = mainWindow.getContentBounds()
+  authView.setBounds({ x: 0, y: 0, width: bounds.width, height: bounds.height })
 }
 
-function createAuthWindow(): BrowserWindow {
-  if (authWindow && !authWindow.isDestroyed()) {
-    return authWindow
+function showAuthView(): void {
+  const mainWindow = getMainWindow()
+  if (!mainWindow) return
+
+  if (!authView) {
+    authView = new WebContentsView({
+      webPreferences: {
+        contextIsolation: true,
+        nodeIntegration: false,
+        sandbox: true
+      }
+    })
+    setupNavigationHandlers(authView.webContents)
   }
 
+  if (!authViewVisible) {
+    mainWindow.contentView.addChildView(authView)
+    updateAuthViewBounds()
+    mainWindow.on("resize", updateAuthViewBounds)
+    authViewVisible = true
+  }
+}
+
+function hideAuthView(): void {
   const mainWindow = getMainWindow()
-  const mainBounds = mainWindow?.getBounds()
-
-  authWindow = new BrowserWindow({
-    width: mainBounds?.width ?? 1000,
-    height: mainBounds?.height ?? 800,
-    show: false,
-    parent: mainWindow ?? undefined,
-    modal: false,
-    titleBarStyle: "hiddenInset",
-    trafficLightPosition: { x: 15, y: 20 },
-    backgroundColor: "#0a0a0c",
-    webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
-      contextIsolation: true,
-      nodeIntegration: false,
-      sandbox: true
-    }
-  })
-
-  setupNavigationHandlers(authWindow)
-
-  authWindow.on("closed", () => {
-    authWindow = null
-    setAuthInProgress(false)
-    notifyAuthStateChange(false)
-  })
-
-  return authWindow
+  if (!mainWindow || !authView || !authViewVisible) return
+  mainWindow.contentView.removeChildView(authView)
+  mainWindow.off("resize", updateAuthViewBounds)
+  authViewVisible = false
 }
 
 export function registerProtocolHandler(): void {
-  // Register the custom protocol for auth callback
   if (process.defaultApp) {
     if (process.argv.length >= 2) {
       app.setAsDefaultProtocolClient("epidash", process.execPath, [
@@ -65,24 +61,21 @@ export function registerProtocolHandler(): void {
     app.setAsDefaultProtocolClient("epidash")
   }
 
-  // Handle protocol URLs on macOS
   app.on("open-url", (event, url) => {
     event.preventDefault()
     handleProtocolUrl(url)
   })
 
-  // Handle protocol URLs on Windows (second-instance)
   app.on("second-instance", (_event, commandLine) => {
     const url = commandLine.find((arg) => arg.startsWith("epidash://"))
     if (url) {
       handleProtocolUrl(url)
     }
 
-    // Focus the main window
-    const mainWindow = BrowserWindow.getAllWindows()[0]
-    if (mainWindow) {
-      if (mainWindow.isMinimized()) mainWindow.restore()
-      mainWindow.focus()
+    const window = BaseWindow.getAllWindows()[0]
+    if (window) {
+      if (window.isMinimized()) window.restore()
+      window.focus()
     }
   })
 }
@@ -110,62 +103,42 @@ function handleProtocolUrl(url: string): void {
 }
 
 function navigateBackToApp(): void {
-  if (authWindow && !authWindow.isDestroyed()) {
-    authWindow.close()
-    authWindow = null
-  }
-
+  hideAuthView()
   setAuthInProgress(false)
   notifyAuthStateChange(false)
-
-  const mainWindow = getMainWindow()
-  if (mainWindow) {
-    mainWindow.webContents.send("auth:state-changed", { inProgress: false })
-  }
 }
 
-export function setupNavigationHandlers(window: BrowserWindow): void {
-  // Handle navigation events
-  window.webContents.on("will-navigate", (event, url) => {
+export function setupNavigationHandlers(webContents: Electron.WebContents): void {
+  webContents.on("will-navigate", (event, url) => {
     const parsed = new URL(url)
-
-    // Block custom protocol navigations (handled separately via open-url)
     if (parsed.protocol === "epidash:") {
       event.preventDefault()
       handleProtocolUrl(url)
     }
   })
 
-  window.webContents.on("did-navigate", (_event, url) => {
-    handleDidNavigate(url, window)
+  webContents.on("did-navigate", (_event, url) => {
+    handleDidNavigate(url)
   })
 
-  window.webContents.on("did-navigate-in-page", (_event, url) => {
-    handleDidNavigate(url, window)
+  webContents.on("did-navigate-in-page", (_event, url) => {
+    handleDidNavigate(url)
   })
 }
 
-function handleDidNavigate(url: string, window: BrowserWindow): void {
+function handleDidNavigate(url: string): void {
   try {
     const parsed = new URL(url)
 
-    const isAuthWindow = window === authWindow
-
     if (parsed.hostname.includes("login.microsoftonline.com")) {
       setTokenExtracted(false)
-      if (isAuthWindow && authWindow && !authWindow.isVisible()) {
-        authWindow.show()
-        authWindow.focus()
-      }
     }
 
     if (parsed.hostname === "myresults.epitest.eu") {
-      if (isAuthWindow && authWindow?.isVisible()) {
-        authWindow.hide()
-      }
-      if (!isTokenExtracted()) {
+      if (!isTokenExtracted() && authView) {
         setTokenExtracted(true)
-        setTimeout(() => extractToken(window), 200)
+        const webContents = authView.webContents
+        setTimeout(() => extractToken(webContents), 200)
       }
     }
   } catch {
@@ -173,8 +146,7 @@ function handleDidNavigate(url: string, window: BrowserWindow): void {
   }
 }
 
-async function extractToken(window: BrowserWindow): Promise<void> {
-  // Same JavaScript injection as Tauri, but with epidash:// protocol
+async function extractToken(webContents: Electron.WebContents): Promise<void> {
   const extractJs = `
     (function() {
       const token = localStorage.getItem('argos-api.oidc-token');
@@ -195,7 +167,7 @@ async function extractToken(window: BrowserWindow): Promise<void> {
   `
 
   try {
-    await window.webContents.executeJavaScript(extractJs)
+    await webContents.executeJavaScript(extractJs)
   } catch (error) {
     console.error("Failed to extract token:", error)
   }
@@ -206,9 +178,11 @@ export async function startLogin(): Promise<void> {
   setTokenExtracted(false)
   notifyAuthStateChange(true)
 
-  const window = createAuthWindow()
+  showAuthView()
+  if (!authView) return
+
   try {
-    await window.loadURL("https://myresults.epitest.eu")
+    await authView.webContents.loadURL("https://myresults.epitest.eu")
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== "ERR_ABORTED") {
       throw error
@@ -226,9 +200,11 @@ export async function reauth(): Promise<void> {
   setTokenExtracted(true)
   notifyAuthStateChange(true)
 
-  const window = createAuthWindow()
+  showAuthView()
+  if (!authView) return
+
   try {
-    await window.loadURL("https://myresults.epitest.eu")
+    await authView.webContents.loadURL("https://myresults.epitest.eu")
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== "ERR_ABORTED") {
       throw error
@@ -236,12 +212,13 @@ export async function reauth(): Promise<void> {
   }
 
   await new Promise((resolve) => setTimeout(resolve, 500))
-  await window.webContents.executeJavaScript(
+  const webContents = authView.webContents
+  await webContents.executeJavaScript(
     "localStorage.removeItem('argos-api.oidc-token');"
   )
 
   setTokenExtracted(false)
-  setTimeout(() => extractToken(window), 200)
+  setTimeout(() => extractToken(webContents), 200)
 }
 
 export async function clearSessionData(): Promise<void> {

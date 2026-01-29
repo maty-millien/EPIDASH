@@ -2,8 +2,11 @@
 
 const API_BASE = "https://api.epitest.eu"
 
-export async function fetchEpitestData(token: string): Promise<unknown> {
-  const response = await fetch(`${API_BASE}/me/2025`, {
+export async function fetchEpitestData(
+  token: string,
+  year: number
+): Promise<unknown> {
+  const response = await fetch(`${API_BASE}/me/${year}`, {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json"
@@ -38,10 +41,11 @@ export async function fetchProjectDetails(
 export async function fetchProjectHistory(
   token: string,
   moduleCode: string,
-  projectSlug: string
+  projectSlug: string,
+  year: number
 ): Promise<unknown> {
   const response = await fetch(
-    `${API_BASE}/me/2025/${moduleCode}/${projectSlug}`,
+    `${API_BASE}/me/${year}/${moduleCode}/${projectSlug}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

@@ -13,11 +13,12 @@ export interface ElectronAPI {
   getAuthState: () => Promise<AuthState>
   onAuthStateChange: (callback: (state: AuthState) => void) => () => void
 
-  fetchEpitestData: () => Promise<unknown>
+  fetchEpitestData: (year: number) => Promise<unknown>
   fetchProjectDetails: (testRunId: number) => Promise<unknown>
   fetchProjectHistory: (
     moduleCode: string,
-    projectSlug: string
+    projectSlug: string,
+    year: number
   ) => Promise<unknown>
 
   getUpdateState: () => Promise<UpdateState>
@@ -46,11 +47,11 @@ const electronAPI: ElectronAPI = {
     }
   },
 
-  fetchEpitestData: () => ipcRenderer.invoke("api:fetch-data"),
+  fetchEpitestData: (year: number) => ipcRenderer.invoke("api:fetch-data", year),
   fetchProjectDetails: (testRunId: number) =>
     ipcRenderer.invoke("api:fetch-details", testRunId),
-  fetchProjectHistory: (moduleCode: string, projectSlug: string) =>
-    ipcRenderer.invoke("api:fetch-history", moduleCode, projectSlug),
+  fetchProjectHistory: (moduleCode: string, projectSlug: string, year: number) =>
+    ipcRenderer.invoke("api:fetch-history", moduleCode, projectSlug, year),
 
   getUpdateState: () => ipcRenderer.invoke("update:get-state"),
   checkForUpdates: () => ipcRenderer.invoke("update:check"),

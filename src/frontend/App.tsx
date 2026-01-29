@@ -21,6 +21,7 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [currentView, setCurrentView] = useState<View>({ type: "dashboard" });
   const [updateReady, setUpdateReady] = useState<UpdateInfo | null>(null);
+  const [selectedYear, setSelectedYear] = useState(2025);
 
   const handleSelectProject = useCallback((project: ProcessedProject) => {
     setCurrentView({ type: "project-details", project });
@@ -30,18 +31,24 @@ function App() {
     setCurrentView({ type: "dashboard" });
   }, []);
 
+  const handleYearChange = useCallback((year: number) => {
+    setSelectedYear(year);
+  }, []);
+
   const fetchData = useCallback(async () => {
     setFetching(true);
     setError(null);
     try {
-      const data = (await electronAPI.fetchEpitestData()) as EpitestResult[];
+      const data = (await electronAPI.fetchEpitestData(
+        selectedYear
+      )) as EpitestResult[];
       setApiData(data);
     } catch (err) {
       setError(String(err));
     } finally {
       setFetching(false);
     }
-  }, []);
+  }, [selectedYear]);
 
   useEffect(() => {
     const unsubscribe = electronAPI.onAuthStateChange((state) => {
@@ -152,6 +159,8 @@ function App() {
                 onRefresh={fetchData}
                 isRefreshing={fetching}
                 onSelectProject={handleSelectProject}
+                selectedYear={selectedYear}
+                onYearChange={handleYearChange}
               />
             </motion.div>
           )}
@@ -167,6 +176,7 @@ function App() {
               <ProjectDetails
                 project={currentView.project}
                 onBack={handleBackToDashboard}
+                selectedYear={selectedYear}
               />
             </motion.div>
           )}

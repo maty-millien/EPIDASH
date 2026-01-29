@@ -20,9 +20,14 @@ const { electronAPI } = window
 interface ProjectDetailsProps {
   project: ProcessedProject
   onBack: () => void
+  selectedYear: number
 }
 
-export function ProjectDetails({ project, onBack }: ProjectDetailsProps) {
+export function ProjectDetails({
+  project,
+  onBack,
+  selectedYear
+}: ProjectDetailsProps) {
   const [details, setDetails] = useState<ProjectDetailsResponse | null>(null)
   const [history, setHistory] = useState<HistoryPoint[]>([])
   const [loading, setLoading] = useState(true)
@@ -40,7 +45,8 @@ export function ProjectDetails({ project, onBack }: ProjectDetailsProps) {
           ) as Promise<ProjectDetailsResponse>,
           electronAPI.fetchProjectHistory(
             project.moduleCode,
-            project.slug
+            project.slug,
+            selectedYear
           ) as Promise<EpitestResult[]>
         ])
 
@@ -54,7 +60,7 @@ export function ProjectDetails({ project, onBack }: ProjectDetailsProps) {
     }
 
     fetchData()
-  }, [project.testRunId, project.moduleCode, project.slug])
+  }, [project.testRunId, project.moduleCode, project.slug, selectedYear])
 
   const consoleOutput = details
     ? extractConsoleOutput(details.externalItems)

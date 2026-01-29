@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron"
+import { app } from "electron"
 import {
   autoUpdater,
   type UpdateInfo as ElectronUpdateInfo
@@ -7,6 +7,7 @@ import { spawn } from "child_process"
 import fs from "fs"
 import path from "path"
 import type { UpdateState, UpdateInfo } from "@/shared/types/update"
+import { getAppView } from "@/core/window"
 
 let updateState: UpdateState = {
   checking: false,
@@ -23,9 +24,10 @@ let periodicCheckInterval: NodeJS.Timeout | null = null
 const UPDATE_CHECK_INTERVAL = 3600000
 
 function notifyRenderer(event: string, data?: unknown): void {
-  BrowserWindow.getAllWindows().forEach((window) => {
-    window.webContents.send(event, data)
-  })
+  const appView = getAppView()
+  if (appView) {
+    appView.webContents.send(event, data)
+  }
 }
 
 function convertUpdateInfo(info: ElectronUpdateInfo): UpdateInfo {
