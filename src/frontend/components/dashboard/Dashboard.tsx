@@ -72,14 +72,14 @@ export function Dashboard({
 
   return (
     <motion.div
-      className="mx-auto max-w-300 px-8 pt-6 pb-12"
+      className="px-8 pt-6 pb-12"
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
     >
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-text text-[28px] font-semibold tracking-tight">
+        <h1 className="text-text font-display text-2xl tracking-wide">
           EPIDASH
         </h1>
         <div className="flex items-center gap-2">

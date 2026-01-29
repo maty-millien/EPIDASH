@@ -89,7 +89,7 @@ export function ProjectDetails({
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-300 px-8 pt-6 pb-12">
+      <div className="px-8 pt-6 pb-12">
         <DetailsHeader project={project} gitCommit={null} onBack={onBack} />
         <div className="mt-16 flex items-center justify-center">
           <div className="text-text-tertiary flex items-center gap-3 text-sm">
@@ -111,7 +111,7 @@ export function ProjectDetails({
 
   if (error) {
     return (
-      <div className="mx-auto max-w-300 px-8 pt-6 pb-12">
+      <div className="px-8 pt-6 pb-12">
         <DetailsHeader project={project} gitCommit={null} onBack={onBack} />
         <div className="text-fail mt-16 text-center text-sm">{error}</div>
       </div>
@@ -120,7 +120,7 @@ export function ProjectDetails({
 
   return (
     <motion.div
-      className="mx-auto max-w-300 px-8 pt-6 pb-12"
+      className="px-8 pt-6 pb-12"
       variants={containerVariants}
       initial="hidden"
       animate="show"
