@@ -127,7 +127,7 @@ function App() {
   return (
     <div className="bg-void min-h-screen font-sans">
       {/* Drag region for window movement (Electron style) */}
-      <div className="from-void fixed top-0 right-0 left-0 z-50 h-8 bg-linear-to-b to-transparent [-webkit-app-region:drag]" />
+      <div className="from-void fixed top-0 right-0 left-0 z-50 h-10 bg-linear-to-b to-transparent [-webkit-app-region:drag]" />
 
       {/* Main content */}
       <main className="pt-8">

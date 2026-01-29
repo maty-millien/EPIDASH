@@ -1,4 +1,4 @@
-import { motion } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import { useEffect, useState } from "react"
 import type { EpitestResult, ProjectDetailsResponse } from "@/shared/types/api"
 import type { HistoryPoint, ProcessedProject } from "@/shared/types/ui"
@@ -16,6 +16,10 @@ import { SkillAccordion } from "@/frontend/components/project-details/SkillAccor
 import { SummaryCards } from "@/frontend/components/project-details/SummaryCards"
 
 const { electronAPI } = window
+
+function SkeletonBox({ className }: { className: string }) {
+  return <div className={`animate-shimmer rounded ${className}`} />
+}
 
 interface ProjectDetailsProps {
   project: ProcessedProject
@@ -87,27 +91,7 @@ export function ProjectDetails({
     }
   }
 
-  if (loading) {
-    return (
-      <div className="px-8 pt-6 pb-12">
-        <DetailsHeader project={project} gitCommit={null} onBack={onBack} />
-        <div className="mt-16 flex items-center justify-center">
-          <div className="text-text-tertiary flex items-center gap-3 text-sm">
-            <motion.div
-              className="bg-accent size-2 rounded-full"
-              animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-              transition={{
-                duration: 1.2,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
-            Loading details...
-          </div>
-        </div>
-      </div>
-    )
-  }
+  const contentTransition = { duration: 0.25, ease: "easeOut" as const }
 
   if (error) {
     return (
@@ -133,41 +117,119 @@ export function ProjectDetails({
         />
       </motion.div>
 
-      {history.length > 1 && (
-        <motion.div variants={itemVariants} className="mt-8">
-          <h2 className="text-text-secondary mb-4 text-xs font-semibold tracking-wider uppercase">
-            Progression
-          </h2>
-          <ProgressionChart history={history} status={project.status} />
-        </motion.div>
-      )}
-
-      <motion.div variants={itemVariants} className="mt-6">
-        <SummaryCards project={project} />
+      <motion.div variants={itemVariants} className="mt-8">
+        <AnimatePresence mode="wait">
+          {loading ? (
+            <motion.div
+              key="chart-skeleton"
+              exit={{ opacity: 0 }}
+              transition={contentTransition}
+            >
+              <SkeletonBox className="mb-4 h-4 w-24" />
+              <SkeletonBox className="h-[358px] rounded-xl" />
+            </motion.div>
+          ) : history.length > 1 ? (
+            <motion.div
+              key="chart-content"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={contentTransition}
+            >
+              <h2 className="text-text-secondary mb-4 text-xs font-semibold tracking-wider uppercase">
+                Progression
+              </h2>
+              <ProgressionChart history={history} status={project.status} />
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
       </motion.div>
 
-      {skillTests.length > 0 && (
-        <motion.div variants={itemVariants} className="mt-6">
-          <div className="flex flex-col gap-2">
-            {skillTests.map((skill, index) => (
-              <SkillAccordion
-                key={skill.skillName}
-                skillName={skill.skillName}
-                tests={skill.tests}
-                index={index}
-              />
-            ))}
-          </div>
-        </motion.div>
-      )}
+      <motion.div variants={itemVariants} className="mt-6">
+        <AnimatePresence mode="wait">
+          {loading ? (
+            <motion.div
+              key="cards-skeleton"
+              exit={{ opacity: 0 }}
+              transition={contentTransition}
+            >
+              <div className="grid grid-cols-3 gap-6">
+                {[0, 1, 2].map((i) => (
+                  <div
+                    key={i}
+                    className="border-border bg-surface rounded-xl border p-5"
+                  >
+                    <SkeletonBox className="mb-3 h-3 w-20" />
+                    <SkeletonBox className="mb-2 h-8 w-24" />
+                    <SkeletonBox className="h-3 w-32" />
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="cards-content"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={contentTransition}
+            >
+              <SummaryCards project={project} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
 
-      {consoleOutput && (
+      <motion.div variants={itemVariants} className="mt-6">
+        <AnimatePresence mode="wait">
+          {loading ? (
+            <motion.div
+              key="skills-skeleton"
+              exit={{ opacity: 0 }}
+              transition={contentTransition}
+            >
+              <div className="flex flex-col gap-2">
+                {[0, 1, 2].map((i) => (
+                  <div
+                    key={i}
+                    className="bg-surface border-border flex items-center justify-between rounded-xl border px-5 py-4"
+                  >
+                    <SkeletonBox className="h-4 w-40" />
+                    <div className="flex items-center gap-3">
+                      <SkeletonBox className="h-4 w-12" />
+                      <SkeletonBox className="h-2 w-24 rounded-full" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          ) : skillTests.length > 0 ? (
+            <motion.div
+              key="skills-content"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={contentTransition}
+            >
+              <div className="flex flex-col gap-2">
+                {skillTests.map((skill, index) => (
+                  <SkillAccordion
+                    key={skill.skillName}
+                    skillName={skill.skillName}
+                    tests={skill.tests}
+                    index={index}
+                  />
+                ))}
+              </div>
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
+      </motion.div>
+
+      {!loading && consoleOutput && (
         <motion.div variants={itemVariants} className="mt-6">
           <ConsoleOutput output={consoleOutput} />
         </motion.div>
       )}
 
-      {(coverage.lines > 0 || coverage.branches > 0) && (
+      {!loading && (coverage.lines > 0 || coverage.branches > 0) && (
         <motion.div variants={itemVariants} className="mt-6">
           <CoveragePanel lines={coverage.lines} branches={coverage.branches} />
         </motion.div>
