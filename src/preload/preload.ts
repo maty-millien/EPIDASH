@@ -1,36 +1,36 @@
-import { contextBridge, ipcRenderer } from "electron"
-import type { UpdateInfo, UpdateState } from "@/shared/types/update"
+import { contextBridge, ipcRenderer } from "electron";
+import type { UpdateInfo, UpdateState } from "@/shared/types/update";
 
 export interface AuthState {
-  inProgress: boolean
+  inProgress: boolean;
 }
 
 export interface ElectronAPI {
-  isLoggedIn: () => Promise<boolean>
-  startLogin: () => Promise<void>
-  logout: () => Promise<void>
-  reauth: () => Promise<void>
-  getAuthState: () => Promise<AuthState>
-  onAuthStateChange: (callback: (state: AuthState) => void) => () => void
+  isLoggedIn: () => Promise<boolean>;
+  startLogin: () => Promise<void>;
+  logout: () => Promise<void>;
+  reauth: () => Promise<void>;
+  getAuthState: () => Promise<AuthState>;
+  onAuthStateChange: (callback: (state: AuthState) => void) => () => void;
 
-  fetchEpitestData: (year: number) => Promise<unknown>
-  fetchProjectDetails: (testRunId: number) => Promise<unknown>
+  fetchEpitestData: (year: number) => Promise<unknown>;
+  fetchProjectDetails: (testRunId: number) => Promise<unknown>;
   fetchProjectHistory: (
     moduleCode: string,
     projectSlug: string,
-    year: number
-  ) => Promise<unknown>
+    year: number,
+  ) => Promise<unknown>;
 
-  getUpdateState: () => Promise<UpdateState>
-  checkForUpdates: () => Promise<void>
-  installUpdate: () => Promise<void>
-  simulateUpdate: () => Promise<void>
-  onUpdateDownloaded: (callback: (info: UpdateInfo) => void) => () => void
-  onUpdateProgress: (callback: (progress: number) => void) => () => void
-  onUpdateError: (callback: (error: string) => void) => () => void
-  onUpdateNotAvailable: (callback: () => void) => () => void
+  getUpdateState: () => Promise<UpdateState>;
+  checkForUpdates: () => Promise<void>;
+  installUpdate: () => Promise<void>;
+  simulateUpdate: () => Promise<void>;
+  onUpdateDownloaded: (callback: (info: UpdateInfo) => void) => () => void;
+  onUpdateProgress: (callback: (progress: number) => void) => () => void;
+  onUpdateError: (callback: (error: string) => void) => () => void;
+  onUpdateNotAvailable: (callback: () => void) => () => void;
 
-  openExternal: (url: string) => Promise<void>
+  openExternal: (url: string) => Promise<void>;
 }
 
 const electronAPI: ElectronAPI = {
@@ -41,19 +41,23 @@ const electronAPI: ElectronAPI = {
   getAuthState: () => ipcRenderer.invoke("auth:get-state"),
   onAuthStateChange: (callback: (state: AuthState) => void) => {
     const handler = (_event: Electron.IpcRendererEvent, state: AuthState) => {
-      callback(state)
-    }
-    ipcRenderer.on("auth:state-changed", handler)
+      callback(state);
+    };
+    ipcRenderer.on("auth:state-changed", handler);
     return () => {
-      ipcRenderer.removeListener("auth:state-changed", handler)
-    }
+      ipcRenderer.removeListener("auth:state-changed", handler);
+    };
   },
 
-  fetchEpitestData: (year: number) => ipcRenderer.invoke("api:fetch-data", year),
+  fetchEpitestData: (year: number) =>
+    ipcRenderer.invoke("api:fetch-data", year),
   fetchProjectDetails: (testRunId: number) =>
     ipcRenderer.invoke("api:fetch-details", testRunId),
-  fetchProjectHistory: (moduleCode: string, projectSlug: string, year: number) =>
-    ipcRenderer.invoke("api:fetch-history", moduleCode, projectSlug, year),
+  fetchProjectHistory: (
+    moduleCode: string,
+    projectSlug: string,
+    year: number,
+  ) => ipcRenderer.invoke("api:fetch-history", moduleCode, projectSlug, year),
 
   getUpdateState: () => ipcRenderer.invoke("update:get-state"),
   checkForUpdates: () => ipcRenderer.invoke("update:check"),
@@ -61,42 +65,42 @@ const electronAPI: ElectronAPI = {
   simulateUpdate: () => ipcRenderer.invoke("update:simulate"),
   onUpdateDownloaded: (callback: (info: UpdateInfo) => void) => {
     const handler = (_event: Electron.IpcRendererEvent, info: UpdateInfo) => {
-      callback(info)
-    }
-    ipcRenderer.on("update:downloaded", handler)
+      callback(info);
+    };
+    ipcRenderer.on("update:downloaded", handler);
     return () => {
-      ipcRenderer.removeListener("update:downloaded", handler)
-    }
+      ipcRenderer.removeListener("update:downloaded", handler);
+    };
   },
   onUpdateProgress: (callback: (progress: number) => void) => {
     const handler = (_event: Electron.IpcRendererEvent, progress: number) => {
-      callback(progress)
-    }
-    ipcRenderer.on("update:progress", handler)
+      callback(progress);
+    };
+    ipcRenderer.on("update:progress", handler);
     return () => {
-      ipcRenderer.removeListener("update:progress", handler)
-    }
+      ipcRenderer.removeListener("update:progress", handler);
+    };
   },
   onUpdateError: (callback: (error: string) => void) => {
     const handler = (_event: Electron.IpcRendererEvent, error: string) => {
-      callback(error)
-    }
-    ipcRenderer.on("update:error", handler)
+      callback(error);
+    };
+    ipcRenderer.on("update:error", handler);
     return () => {
-      ipcRenderer.removeListener("update:error", handler)
-    }
+      ipcRenderer.removeListener("update:error", handler);
+    };
   },
   onUpdateNotAvailable: (callback: () => void) => {
     const handler = () => {
-      callback()
-    }
-    ipcRenderer.on("update:not-available", handler)
+      callback();
+    };
+    ipcRenderer.on("update:not-available", handler);
     return () => {
-      ipcRenderer.removeListener("update:not-available", handler)
-    }
+      ipcRenderer.removeListener("update:not-available", handler);
+    };
   },
 
-  openExternal: (url: string) => ipcRenderer.invoke("shell:open-external", url)
-}
+  openExternal: (url: string) => ipcRenderer.invoke("shell:open-external", url),
+};
 
-contextBridge.exposeInMainWorld("electronAPI", electronAPI)
+contextBridge.exposeInMainWorld("electronAPI", electronAPI);

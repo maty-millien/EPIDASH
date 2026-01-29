@@ -2,35 +2,37 @@ import {
   IconCheck,
   IconChevronDown,
   IconFlame,
-  IconX
-} from "@tabler/icons-react"
-import { AnimatePresence, motion } from "framer-motion"
-import { useState } from "react"
-import type { TestResult } from "@/shared/types/api"
+  IconX,
+} from "@tabler/icons-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
+import type { ExtractedSkill } from "@/shared/types/ui";
 
 interface SkillAccordionProps {
-  skillName: string
-  tests: TestResult[]
-  index: number
+  skill: ExtractedSkill;
+  index: number;
 }
 
-export function SkillAccordion({
-  skillName,
-  tests,
-  index
-}: SkillAccordionProps) {
-  const [expanded, setExpanded] = useState(false)
+export function SkillAccordion({ skill, index }: SkillAccordionProps) {
+  const [expanded, setExpanded] = useState(false);
 
-  const passedCount = tests.filter((t) => t.passed).length
-  const totalCount = tests.length
-  const allPassed = passedCount === totalCount
-  const hasCrashes = tests.some((t) => t.crashed)
-  const hasFailures = tests.some((t) => !t.passed && !t.crashed && !t.skipped)
+  const { tests, breakdown, skillName } = skill;
 
-  // Expandable if there are any logs to show
-  const isSingleTest = tests.length === 1
-  const hasLogs = tests.some((t) => t.comment && t.comment.length > 0)
-  const isExpandable = hasLogs
+  const passedCount = tests
+    ? tests.filter((t) => t.passed).length
+    : breakdown!.passed;
+  const totalCount = tests ? tests.length : breakdown!.count;
+  const crashedCount = tests
+    ? tests.filter((t) => t.crashed).length
+    : breakdown!.crashed;
+  const allPassed = passedCount === totalCount;
+  const hasCrashes = crashedCount > 0;
+  const hasFailures = totalCount - passedCount - crashedCount > 0;
+
+  const isSingleTest = totalCount === 1;
+  const hasLogs =
+    tests?.some((t) => t.comment && t.comment.length > 0) ?? false;
+  const isExpandable = hasLogs;
 
   const statusColor = hasCrashes
     ? "text-crash"
@@ -38,7 +40,7 @@ export function SkillAccordion({
       ? "text-fail"
       : allPassed
         ? "text-pass"
-        : "text-warning"
+        : "text-warning";
 
   const bgColor = hasCrashes
     ? "bg-crash-dim"
@@ -46,7 +48,7 @@ export function SkillAccordion({
       ? "bg-fail-dim"
       : allPassed
         ? "bg-pass-dim"
-        : "bg-warning-dim"
+        : "bg-warning-dim";
 
   return (
     <motion.div
@@ -103,7 +105,7 @@ export function SkillAccordion({
       </div>
 
       <AnimatePresence>
-        {expanded && isExpandable && (
+        {expanded && isExpandable && tests && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
@@ -128,5 +130,5 @@ export function SkillAccordion({
         )}
       </AnimatePresence>
     </motion.div>
-  )
+  );
 }

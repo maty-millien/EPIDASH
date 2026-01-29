@@ -1,9 +1,9 @@
-import { IconAlertCircle } from "@tabler/icons-react"
-import { motion } from "framer-motion"
+import { IconAlertCircle } from "@tabler/icons-react";
+import { motion } from "framer-motion";
 
 interface ErrorStateProps {
-  message: string
-  onRetry: () => void
+  message: string;
+  onRetry: () => void;
 }
 
 export function ErrorState({ message, onRetry }: ErrorStateProps) {
@@ -48,5 +48,5 @@ export function ErrorState({ message, onRetry }: ErrorStateProps) {
         Try Again
       </motion.button>
     </motion.div>
-  )
+  );
 }

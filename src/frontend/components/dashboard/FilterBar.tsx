@@ -1,23 +1,23 @@
-import { IconChevronDown, IconSearch } from "@tabler/icons-react"
-import { motion } from "framer-motion"
-import type { FilterStatus } from "@/shared/types/ui"
+import { IconChevronDown, IconSearch } from "@tabler/icons-react";
+import { motion } from "framer-motion";
+import type { FilterStatus } from "@/shared/types/ui";
 
 interface FilterBarProps {
-  status: FilterStatus
-  onStatusChange: (status: FilterStatus) => void
-  modules: string[]
-  selectedModule: string | null
-  onModuleChange: (module: string | null) => void
-  searchQuery: string
-  onSearchChange: (query: string) => void
+  status: FilterStatus;
+  onStatusChange: (status: FilterStatus) => void;
+  modules: string[];
+  selectedModule: string | null;
+  onModuleChange: (module: string | null) => void;
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
 }
 
 const filterOptions: { value: FilterStatus; label: string }[] = [
   { value: "all", label: "All" },
   { value: "perfect", label: "Complete" },
   { value: "passing", label: "Partial" },
-  { value: "needs-work", label: "Review" }
-]
+  { value: "needs-work", label: "Review" },
+];
 
 export function FilterBar({
   status,
@@ -26,7 +26,7 @@ export function FilterBar({
   selectedModule,
   onModuleChange,
   searchQuery,
-  onSearchChange
+  onSearchChange,
 }: FilterBarProps) {
   return (
     <motion.div
@@ -88,5 +88,5 @@ export function FilterBar({
         />
       </div>
     </motion.div>
-  )
+  );
 }

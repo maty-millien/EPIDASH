@@ -1,10 +1,10 @@
 // Application menu (replaces Tauri MenuBuilder)
 
-import { Menu, app, MenuItemConstructorOptions } from "electron"
-import { clearSessionData } from "@/core/auth"
+import { Menu, app, MenuItemConstructorOptions } from "electron";
+import { clearSessionData } from "@/core/auth";
 
 export function createMenu(): void {
-  const isMac = process.platform === "darwin"
+  const isMac = process.platform === "darwin";
 
   const template: MenuItemConstructorOptions[] = [
     // App menu (macOS only)
@@ -16,12 +16,12 @@ export function createMenu(): void {
               {
                 label: "Clear Session Data",
                 accelerator: "CmdOrCtrl+Shift+L",
-                click: clearSessionData
+                click: clearSessionData,
               },
               { type: "separator" as const },
-              { role: "quit" as const }
-            ]
-          }
+              { role: "quit" as const },
+            ],
+          },
         ]
       : []),
 
@@ -35,8 +35,8 @@ export function createMenu(): void {
         { role: "cut" },
         { role: "copy" },
         { role: "paste" },
-        { role: "selectAll" }
-      ]
+        { role: "selectAll" },
+      ],
     },
 
     // View menu (development)
@@ -49,8 +49,8 @@ export function createMenu(): void {
         { type: "separator" },
         { role: "resetZoom" },
         { role: "zoomIn" },
-        { role: "zoomOut" }
-      ]
+        { role: "zoomOut" },
+      ],
     },
 
     // Window menu
@@ -61,11 +61,11 @@ export function createMenu(): void {
         { role: "zoom" },
         ...(isMac
           ? [{ type: "separator" as const }, { role: "front" as const }]
-          : [{ role: "close" as const }])
-      ]
-    }
-  ]
+          : [{ role: "close" as const }]),
+      ],
+    },
+  ];
 
-  const menu = Menu.buildFromTemplate(template)
-  Menu.setApplicationMenu(menu)
+  const menu = Menu.buildFromTemplate(template);
+  Menu.setApplicationMenu(menu);
 }

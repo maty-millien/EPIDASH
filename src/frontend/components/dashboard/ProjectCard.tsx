@@ -1,40 +1,40 @@
-import { useState } from "react"
-import { IconChevronDown } from "@tabler/icons-react"
-import { motion, AnimatePresence } from "framer-motion"
-import type { ProcessedProject } from "@/shared/types/ui"
-import { MiniBar } from "@/frontend/components/ui/MiniBar"
-import { SkillsPanel } from "@/frontend/components/dashboard/SkillsPanel"
+import { useState } from "react";
+import { IconChevronDown } from "@tabler/icons-react";
+import { motion, AnimatePresence } from "framer-motion";
+import type { ProcessedProject } from "@/shared/types/ui";
+import { MiniBar } from "@/frontend/components/ui/MiniBar";
+import { SkillsPanel } from "@/frontend/components/dashboard/SkillsPanel";
 
 interface ProjectCardProps {
-  project: ProcessedProject
-  onSelect: (project: ProcessedProject) => void
-  filterKey?: string
+  project: ProcessedProject;
+  onSelect: (project: ProcessedProject) => void;
+  filterKey?: string;
 }
 
 const titleColors: Record<ProcessedProject["status"], string> = {
   perfect: "text-pass",
   passing: "text-warning",
   failing: "text-fail",
-  critical: "text-crash"
-}
+  critical: "text-crash",
+};
 
 const rateColors: Record<ProcessedProject["status"], string> = {
   perfect: "text-pass",
   passing: "text-warning",
   failing: "text-fail",
-  critical: "text-crash"
-}
+  critical: "text-crash",
+};
 
 export function ProjectCard({
   project,
   onSelect,
-  filterKey
+  filterKey,
 }: ProjectCardProps) {
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(false);
 
   const handleCardClick = () => {
-    onSelect(project)
-  }
+    onSelect(project);
+  };
 
   return (
     <div
@@ -84,8 +84,8 @@ export function ProjectCard({
           <button
             className={`text-text-tertiary hover:text-text flex size-8 items-center justify-center rounded-md transition-all duration-150`}
             onClick={(e) => {
-              e.stopPropagation()
-              setExpanded(!expanded)
+              e.stopPropagation();
+              setExpanded(!expanded);
             }}
           >
             <IconChevronDown
@@ -114,5 +114,5 @@ export function ProjectCard({
         )}
       </AnimatePresence>
     </div>
-  )
+  );
 }

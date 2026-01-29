@@ -1,16 +1,16 @@
-import { IconAlertTriangle, IconCheck } from "@tabler/icons-react"
-import type { ProcessedProject } from "@/shared/types/ui"
+import { IconAlertTriangle, IconCheck } from "@tabler/icons-react";
+import type { ProcessedProject } from "@/shared/types/ui";
 
 interface SummaryCardsProps {
-  project: ProcessedProject
+  project: ProcessedProject;
 }
 
 const statusColors: Record<ProcessedProject["status"], string> = {
   perfect: "text-pass",
   passing: "text-warning",
   failing: "text-fail",
-  critical: "text-crash"
-}
+  critical: "text-crash",
+};
 
 export function SummaryCards({ project }: SummaryCardsProps) {
   return (
@@ -87,5 +87,5 @@ export function SummaryCards({ project }: SummaryCardsProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

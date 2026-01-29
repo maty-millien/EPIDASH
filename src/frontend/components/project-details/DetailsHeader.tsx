@@ -1,25 +1,25 @@
-import { IconArrowLeft, IconGitCommit } from "@tabler/icons-react"
-import type { ProcessedProject } from "@/shared/types/ui"
+import { IconArrowLeft, IconGitCommit } from "@tabler/icons-react";
+import type { ProcessedProject } from "@/shared/types/ui";
 
 interface DetailsHeaderProps {
-  project: ProcessedProject
-  gitCommit: string | null
-  onBack: () => void
+  project: ProcessedProject;
+  gitCommit: string | null;
+  onBack: () => void;
 }
 
 const titleColors: Record<ProcessedProject["status"], string> = {
   perfect: "text-pass",
   passing: "text-warning",
   failing: "text-fail",
-  critical: "text-crash"
-}
+  critical: "text-crash",
+};
 
 export function DetailsHeader({
   project,
   gitCommit,
-  onBack
+  onBack,
 }: DetailsHeaderProps) {
-  const shortCommit = gitCommit?.slice(0, 7)
+  const shortCommit = gitCommit?.slice(0, 7);
 
   return (
     <div>
@@ -66,5 +66,5 @@ export function DetailsHeader({
         )}
       </div>
     </div>
-  )
+  );
 }

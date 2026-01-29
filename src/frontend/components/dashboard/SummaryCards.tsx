@@ -1,26 +1,26 @@
-import { motion } from "framer-motion"
-import type { DashboardSummary } from "@/shared/types/ui"
+import { motion } from "framer-motion";
+import type { DashboardSummary } from "@/shared/types/ui";
 
 interface SummaryCardsProps {
-  summary: DashboardSummary
+  summary: DashboardSummary;
 }
 
 const containerVariants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: { staggerChildren: 0.06 }
-  }
-} as const
+    transition: { staggerChildren: 0.06 },
+  },
+} as const;
 
 const cardVariants = {
   hidden: { opacity: 0, y: 12 },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.3, ease: "easeOut" as const }
-  }
-}
+    transition: { duration: 0.3, ease: "easeOut" as const },
+  },
+};
 
 export function SummaryCards({ summary }: SummaryCardsProps) {
   return (
@@ -90,5 +90,5 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
         </span>
       </motion.div>
     </motion.div>
-  )
+  );
 }

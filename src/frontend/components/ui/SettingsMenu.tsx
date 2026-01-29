@@ -1,67 +1,67 @@
-import { useState, useEffect, useRef } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   IconSettings,
   IconDownload,
   IconCheck,
   IconLoader2,
   IconAlertCircle,
-  IconSparkles
-} from "@tabler/icons-react"
-import type { UpdateState } from "@/shared/types/update"
+  IconSparkles,
+} from "@tabler/icons-react";
+import type { UpdateState } from "@/shared/types/update";
 
-const { electronAPI } = window
+const { electronAPI } = window;
 
 export function SettingsMenu() {
-  const [isOpen, setIsOpen] = useState(false)
-  const [updateState, setUpdateState] = useState<UpdateState | null>(null)
-  const [isHovered, setIsHovered] = useState(false)
-  const menuRef = useRef<HTMLDivElement>(null)
+  const [isOpen, setIsOpen] = useState(false);
+  const [updateState, setUpdateState] = useState<UpdateState | null>(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsOpen(false)
+        setIsOpen(false);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [])
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
-      electronAPI.getUpdateState().then(setUpdateState)
+      electronAPI.getUpdateState().then(setUpdateState);
     }
-  }, [isOpen])
+  }, [isOpen]);
 
   useEffect(() => {
     const unsubProgress = electronAPI.onUpdateProgress((progress) => {
       setUpdateState((prev) =>
-        prev ? { ...prev, downloading: true, progress } : null
-      )
-    })
+        prev ? { ...prev, downloading: true, progress } : null,
+      );
+    });
     const unsubDownloaded = electronAPI.onUpdateDownloaded((info) => {
       setUpdateState((prev) =>
-        prev ? { ...prev, downloading: false, downloaded: true, info } : null
-      )
-    })
+        prev ? { ...prev, downloading: false, downloaded: true, info } : null,
+      );
+    });
     const unsubError = electronAPI.onUpdateError((error) => {
       setUpdateState((prev) =>
-        prev ? { ...prev, checking: false, downloading: false, error } : null
-      )
-    })
+        prev ? { ...prev, checking: false, downloading: false, error } : null,
+      );
+    });
     const unsubNotAvailable = electronAPI.onUpdateNotAvailable(() => {
       setUpdateState((prev) =>
-        prev ? { ...prev, checking: false, available: false } : null
-      )
-    })
+        prev ? { ...prev, checking: false, available: false } : null,
+      );
+    });
     return () => {
-      unsubProgress()
-      unsubDownloaded()
-      unsubError()
-      unsubNotAvailable()
-    }
-  }, [])
+      unsubProgress();
+      unsubDownloaded();
+      unsubError();
+      unsubNotAvailable();
+    };
+  }, []);
 
   const handleCheckForUpdates = async () => {
     setUpdateState((prev) =>
@@ -74,63 +74,63 @@ export function SettingsMenu() {
             downloaded: false,
             error: null,
             info: null,
-            progress: null
-          }
-    )
-    await electronAPI.checkForUpdates()
-  }
+            progress: null,
+          },
+    );
+    await electronAPI.checkForUpdates();
+  };
 
   const handleInstall = () => {
-    electronAPI.installUpdate()
-  }
+    electronAPI.installUpdate();
+  };
 
   const getStatusDisplay = () => {
-    if (!updateState) return null
+    if (!updateState) return null;
 
     if (updateState.checking) {
       return {
         icon: IconLoader2,
         text: "Checking...",
         color: "text-accent",
-        spin: true
-      }
+        spin: true,
+      };
     }
     if (updateState.downloading) {
       return {
         icon: IconDownload,
         text: `Downloading ${updateState.progress ?? 0}%`,
         color: "text-accent",
-        spin: false
-      }
+        spin: false,
+      };
     }
     if (updateState.downloaded && updateState.info) {
       return {
         icon: IconSparkles,
         text: `v${updateState.info.version} ready`,
         color: "text-pass",
-        spin: false
-      }
+        spin: false,
+      };
     }
     if (updateState.error) {
       return {
         icon: IconAlertCircle,
         text: updateState.error,
         color: "text-fail",
-        spin: false
-      }
+        spin: false,
+      };
     }
     if (updateState.available === false && !updateState.checking) {
       return {
         icon: IconCheck,
         text: "Up to date",
         color: "text-pass",
-        spin: false
-      }
+        spin: false,
+      };
     }
-    return null
-  }
+    return null;
+  };
 
-  const status = getStatusDisplay()
+  const status = getStatusDisplay();
 
   return (
     <div ref={menuRef} className="relative">
@@ -165,14 +165,14 @@ export function SettingsMenu() {
               {status && (
                 <div className="mb-3 flex items-start gap-2">
                   {(() => {
-                    const StatusIcon = status.icon
+                    const StatusIcon = status.icon;
                     return (
                       <StatusIcon
                         size={14}
                         stroke={2}
                         className={`${status.color} ${status.spin ? "animate-spin" : ""} mt-0.5 shrink-0`}
                       />
-                    )
+                    );
                   })()}
                   <span className={`text-sm ${status.color} break-words`}>
                     {status.text}
@@ -220,5 +220,5 @@ export function SettingsMenu() {
         )}
       </AnimatePresence>
     </div>
-  )
+  );
 }

@@ -1,11 +1,11 @@
-import type { ElectronAPI } from "@/preload/preload"
+import type { ElectronAPI } from "@/preload/preload";
 
 declare global {
   interface Window {
-    electronAPI: ElectronAPI
+    electronAPI: ElectronAPI;
   }
 
-  const __APP_VERSION__: string | undefined
+  const __APP_VERSION__: string | undefined;
 }
 
-export {}
+export {};

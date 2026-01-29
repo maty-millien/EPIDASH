@@ -1,39 +1,39 @@
-import { motion } from "framer-motion"
-import type { ProcessedSkill, LintSeverity } from "@/shared/types/ui"
+import { motion } from "framer-motion";
+import type { ProcessedSkill, LintSeverity } from "@/shared/types/ui";
 
 interface SkillsPanelProps {
-  skills: ProcessedSkill[]
-  lintSeverity: LintSeverity
+  skills: ProcessedSkill[];
+  lintSeverity: LintSeverity;
   lintCounts: {
-    fatal: number
-    major: number
-    minor: number
-    info: number
-    note: number
-  }
+    fatal: number;
+    major: number;
+    minor: number;
+    info: number;
+    note: number;
+  };
 }
 
 const statusColors: Record<ProcessedSkill["status"], string> = {
   perfect: "stroke-pass",
   passed: "stroke-warning",
   failed: "stroke-fail",
-  crashed: "stroke-crash"
-}
+  crashed: "stroke-crash",
+};
 
 const bgColors: Record<ProcessedSkill["status"], string> = {
   perfect: "stroke-pass/20",
   passed: "stroke-warning/20",
   failed: "stroke-fail/20",
-  crashed: "stroke-crash/20"
-}
+  crashed: "stroke-crash/20",
+};
 
 function SkillProgressRing({ skill }: { skill: ProcessedSkill }) {
-  const percent = skill.count > 0 ? (skill.passed / skill.count) * 100 : 0
-  const size = 18
-  const strokeWidth = 2.5
-  const radius = (size - strokeWidth) / 2
-  const circumference = 2 * Math.PI * radius
-  const strokeDashoffset = circumference - (percent / 100) * circumference
+  const percent = skill.count > 0 ? (skill.passed / skill.count) * 100 : 0;
+  const size = 18;
+  const strokeWidth = 2.5;
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (percent / 100) * circumference;
 
   return (
     <svg width={size} height={size} className="shrink-0 -rotate-90">
@@ -59,7 +59,7 @@ function SkillProgressRing({ skill }: { skill: ProcessedSkill }) {
         style={{ strokeDasharray: circumference }}
       />
     </svg>
-  )
+  );
 }
 
 function SkillCount({ skill }: { skill: ProcessedSkill }) {
@@ -67,55 +67,55 @@ function SkillCount({ skill }: { skill: ProcessedSkill }) {
     <span className="text-text-secondary font-mono text-xs">
       {skill.passed}/{skill.count}
     </span>
-  )
+  );
 }
 
 const containerVariants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: { staggerChildren: 0.04 }
-  }
-} as const
+    transition: { staggerChildren: 0.04 },
+  },
+} as const;
 
 const itemVariants = {
   hidden: { opacity: 0, y: 8 },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.2, ease: "easeOut" as const }
-  }
-}
+    transition: { duration: 0.2, ease: "easeOut" as const },
+  },
+};
 
 const badgeVariants = {
   hidden: { opacity: 0, scale: 0.9 },
   show: {
     opacity: 1,
     scale: 1,
-    transition: { duration: 0.2, ease: "easeOut" as const }
-  }
-}
+    transition: { duration: 0.2, ease: "easeOut" as const },
+  },
+};
 
 const statusOrder: Record<ProcessedSkill["status"], number> = {
   perfect: 0,
   passed: 1,
   failed: 2,
-  crashed: 3
-}
+  crashed: 3,
+};
 
 export function SkillsPanel({
   skills,
   lintSeverity,
-  lintCounts
+  lintCounts,
 }: SkillsPanelProps) {
   const hasLintIssues =
-    lintCounts.fatal > 0 || lintCounts.major > 0 || lintCounts.minor > 0
+    lintCounts.fatal > 0 || lintCounts.major > 0 || lintCounts.minor > 0;
 
   const sortedSkills = [...skills].sort((a, b) => {
-    const statusDiff = statusOrder[a.status] - statusOrder[b.status]
-    if (statusDiff !== 0) return statusDiff
-    return a.name.localeCompare(b.name)
-  })
+    const statusDiff = statusOrder[a.status] - statusOrder[b.status];
+    if (statusDiff !== 0) return statusDiff;
+    return a.name.localeCompare(b.name);
+  });
 
   return (
     <div className="border-border border-t px-5 pb-5">
@@ -188,5 +188,5 @@ export function SkillsPanel({
         )}
       </motion.div>
     </div>
-  )
+  );
 }

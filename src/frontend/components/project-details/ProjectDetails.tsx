@@ -212,8 +212,7 @@ export function ProjectDetails({
                 {skillTests.map((skill, index) => (
                   <SkillAccordion
                     key={skill.skillName}
-                    skillName={skill.skillName}
-                    tests={skill.tests}
+                    skill={skill}
                     index={index}
                   />
                 ))}
@@ -223,17 +222,40 @@ export function ProjectDetails({
         </AnimatePresence>
       </motion.div>
 
-      {!loading && consoleOutput && (
-        <motion.div variants={itemVariants} className="mt-6">
-          <ConsoleOutput output={consoleOutput} />
-        </motion.div>
-      )}
+      <motion.div variants={itemVariants} className="mt-6">
+        <AnimatePresence mode="wait">
+          {!loading && consoleOutput && (
+            <motion.div
+              key="console-content"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={contentTransition}
+            >
+              <ConsoleOutput output={consoleOutput} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
 
-      {!loading && (coverage.lines > 0 || coverage.branches > 0) && (
-        <motion.div variants={itemVariants} className="mt-6">
-          <CoveragePanel lines={coverage.lines} branches={coverage.branches} />
-        </motion.div>
-      )}
+      <motion.div variants={itemVariants} className="mt-6">
+        <AnimatePresence mode="wait">
+          {!loading && (coverage.lines > 0 || coverage.branches > 0) && (
+            <motion.div
+              key="coverage-content"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={contentTransition}
+            >
+              <CoveragePanel
+                lines={coverage.lines}
+                branches={coverage.branches}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
     </motion.div>
   );
 }

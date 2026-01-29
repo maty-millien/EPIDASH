@@ -1,22 +1,22 @@
-import { IconCheck, IconCopy } from "@tabler/icons-react"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { IconCheck, IconCopy } from "@tabler/icons-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 interface ConsoleOutputProps {
-  output: string
+  output: string;
 }
 
 interface StyledLine {
-  text: string
-  className: string
+  text: string;
+  className: string;
 }
 
 function styleLine(line: string): StyledLine {
   // Section headers (==== ex00 ====)
   if (line.match(/^=+$/)) {
-    return { text: line, className: "text-text-tertiary" }
+    return { text: line, className: "text-text-tertiary" };
   }
   if (line.match(/^\s*ex\d+\s*$/i) || line.match(/^=+\s*\w+\s*=+$/)) {
-    return { text: line, className: "text-accent font-bold" }
+    return { text: line, className: "text-accent font-bold" };
   }
 
   // Building/Checking messages (before general # comments)
@@ -25,7 +25,7 @@ function styleLine(line: string): StyledLine {
     line.startsWith("# Checking") ||
     line.startsWith("# Executing")
   ) {
-    return { text: line, className: "text-[#bb9af7] italic" }
+    return { text: line, className: "text-[#bb9af7] italic" };
   }
 
   // Success messages
@@ -34,17 +34,17 @@ function styleLine(line: string): StyledLine {
     line.includes("# OK") ||
     line.match(/:\s*OK\s*$/)
   ) {
-    return { text: line, className: "text-pass font-semibold" }
+    return { text: line, className: "text-pass font-semibold" };
   }
 
   // Comments (starting with #)
   if (line.startsWith("#")) {
-    return { text: line, className: "text-text-tertiary" }
+    return { text: line, className: "text-text-tertiary" };
   }
 
   // Shell commands
   if (line.startsWith("~/.>") || line.startsWith("$ ")) {
-    return { text: line, className: "text-[#7aa2f7]" }
+    return { text: line, className: "text-[#7aa2f7]" };
   }
 
   // Failure messages
@@ -55,42 +55,42 @@ function styleLine(line: string): StyledLine {
     line.includes("Error:") ||
     line.includes("TIMEOUT")
   ) {
-    return { text: line, className: "text-fail font-medium" }
+    return { text: line, className: "text-fail font-medium" };
   }
 
   // Warnings
   if (line.includes("warning:") || line.includes("Warning:")) {
-    return { text: line, className: "text-warning" }
+    return { text: line, className: "text-warning" };
   }
 
   // Compiler commands
   if (line.includes("clang") || line.includes("g++") || line.includes("gcc")) {
-    return { text: line, className: "text-text-secondary" }
+    return { text: line, className: "text-text-secondary" };
   }
 
   // Default
-  return { text: line, className: "text-text" }
+  return { text: line, className: "text-text" };
 }
 
 export function ConsoleOutput({ output }: ConsoleOutputProps) {
-  const [copied, setCopied] = useState(false)
-  const scrollRef = useRef<HTMLDivElement>(null)
+  const [copied, setCopied] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  const lines = useMemo(() => output.split("\n"), [output])
-  const styledLines = useMemo(() => lines.map(styleLine), [lines])
+  const lines = useMemo(() => output.split("\n"), [output]);
+  const styledLines = useMemo(() => lines.map(styleLine), [lines]);
 
   useEffect(() => {
     if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [output])
+  }, [output]);
 
   const handleCopy = async (e: React.MouseEvent) => {
-    e.stopPropagation()
-    await navigator.clipboard.writeText(output)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
+    e.stopPropagation();
+    await navigator.clipboard.writeText(output);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <div className="bg-surface border-border overflow-hidden rounded-xl border">
@@ -139,5 +139,5 @@ export function ConsoleOutput({ output }: ConsoleOutputProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

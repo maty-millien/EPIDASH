@@ -3,19 +3,19 @@ import {
   IconCheck,
   IconFlame,
   IconPlayerSkipForward,
-  IconX
-} from "@tabler/icons-react"
-import { AnimatePresence, motion } from "framer-motion"
-import { useState } from "react"
-import type { TestResult } from "@/shared/types/api"
+  IconX,
+} from "@tabler/icons-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
+import type { TestResult } from "@/shared/types/api";
 
 interface TestResultRowProps {
-  test: TestResult
+  test: TestResult;
 }
 
 export function TestResultRow({ test }: TestResultRowProps) {
-  const [expanded, setExpanded] = useState(false)
-  const hasComment = test.comment && test.comment.length > 0
+  const [expanded, setExpanded] = useState(false);
+  const hasComment = test.comment && test.comment.length > 0;
 
   const getStatusIcon = () => {
     if (test.skipped) {
@@ -25,37 +25,37 @@ export function TestResultRow({ test }: TestResultRowProps) {
           stroke={2}
           className="text-text-tertiary"
         />
-      )
+      );
     }
     if (test.crashed) {
-      return <IconFlame size={14} stroke={2} className="text-crash" />
+      return <IconFlame size={14} stroke={2} className="text-crash" />;
     }
     if (test.passed) {
-      return <IconCheck size={14} stroke={2} className="text-pass" />
+      return <IconCheck size={14} stroke={2} className="text-pass" />;
     }
-    return <IconX size={14} stroke={2} className="text-fail" />
-  }
+    return <IconX size={14} stroke={2} className="text-fail" />;
+  };
 
   const getStatusText = () => {
-    if (test.skipped) return "SKIPPED"
-    if (test.crashed) return "CRASHED"
-    if (test.passed) return "PASSED"
-    return "FAILED"
-  }
+    if (test.skipped) return "SKIPPED";
+    if (test.crashed) return "CRASHED";
+    if (test.passed) return "PASSED";
+    return "FAILED";
+  };
 
   const getStatusColor = () => {
-    if (test.skipped) return "text-text-tertiary"
-    if (test.crashed) return "text-crash"
-    if (test.passed) return "text-pass"
-    return "text-fail"
-  }
+    if (test.skipped) return "text-text-tertiary";
+    if (test.crashed) return "text-crash";
+    if (test.passed) return "text-pass";
+    return "text-fail";
+  };
 
   const getBgColor = () => {
-    if (test.skipped) return "bg-elevated"
-    if (test.crashed) return "bg-crash-dim"
-    if (test.passed) return "bg-pass-dim"
-    return "bg-fail-dim"
-  }
+    if (test.skipped) return "bg-elevated";
+    if (test.crashed) return "bg-crash-dim";
+    if (test.passed) return "bg-pass-dim";
+    return "bg-fail-dim";
+  };
 
   return (
     <div className="rounded-lg">
@@ -100,5 +100,5 @@ export function TestResultRow({ test }: TestResultRowProps) {
         )}
       </AnimatePresence>
     </div>
-  )
+  );
 }

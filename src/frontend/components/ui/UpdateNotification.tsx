@@ -1,17 +1,17 @@
-import type { UpdateInfo } from "@/shared/types/update"
-import { IconDownload, IconX } from "@tabler/icons-react"
-import { motion } from "framer-motion"
+import type { UpdateInfo } from "@/shared/types/update";
+import { IconDownload, IconX } from "@tabler/icons-react";
+import { motion } from "framer-motion";
 
 interface UpdateNotificationProps {
-  info: UpdateInfo
-  onInstall: () => void
-  onDismiss: () => void
+  info: UpdateInfo;
+  onInstall: () => void;
+  onDismiss: () => void;
 }
 
 export function UpdateNotification({
   info,
   onInstall,
-  onDismiss
+  onDismiss,
 }: UpdateNotificationProps) {
   return (
     <motion.div
@@ -51,5 +51,5 @@ export function UpdateNotification({
         <IconX size={18} stroke={2} />
       </button>
     </motion.div>
-  )
+  );
 }

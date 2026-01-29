@@ -1,20 +1,20 @@
-import { IconCode, IconGitBranch } from "@tabler/icons-react"
+import { IconCode, IconGitBranch } from "@tabler/icons-react";
 
 interface CoveragePanelProps {
-  lines: number
-  branches: number
+  lines: number;
+  branches: number;
 }
 
 function getCoverageColor(value: number): string {
-  if (value >= 80) return "text-pass"
-  if (value >= 50) return "text-warning"
-  return "text-fail"
+  if (value >= 80) return "text-pass";
+  if (value >= 50) return "text-warning";
+  return "text-fail";
 }
 
 function getCoverageBg(value: number): string {
-  if (value >= 80) return "bg-pass"
-  if (value >= 50) return "bg-warning"
-  return "bg-fail"
+  if (value >= 80) return "bg-pass";
+  if (value >= 50) return "bg-warning";
+  return "bg-fail";
 }
 
 export function CoveragePanel({ lines, branches }: CoveragePanelProps) {
@@ -76,5 +76,5 @@ export function CoveragePanel({ lines, branches }: CoveragePanelProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }
