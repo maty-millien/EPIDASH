@@ -12,12 +12,12 @@ OS=$(uname -s)
 case "$OS" in
   Darwin)
     TMPDIR=$(mktemp -d)
-    unzip -q "$UPDATE_PATH" -d "$TMPDIR"
+    ditto -xk "$UPDATE_PATH" "$TMPDIR"
     rm -rf "$APP_PATH"
     mv "$TMPDIR/$APP_NAME.app" "$APP_PATH"
     rm -rf "$TMPDIR"
     xattr -cr "$APP_PATH"
-    open "$APP_PATH"
+    open -a "$APP_PATH"
     ;;
   Linux)
     if [[ "$UPDATE_PATH" == *.deb ]] && command -v dpkg &> /dev/null; then

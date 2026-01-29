@@ -153,7 +153,7 @@ export function installUpdate(): void {
       "Library/Caches/epidash/pending",
       `EPIDASH-darwin-${arch}-${version}.zip`
     )
-    appPath = app.getPath("exe").replace(/\/Contents\/MacOS\/EPIDASH$/, "")
+    appPath = app.getPath("exe").replace(/\/Contents\/MacOS\/epidash$/, "")
   } else if (process.platform === "linux") {
     updatePath = getLinuxUpdatePath(version)
     appPath = "/usr/bin/epidash"
