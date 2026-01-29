@@ -73,7 +73,9 @@ export function setupIpcHandlers(): void {
     async (_event, moduleCode: string, projectSlug: string) => {
       const token = getToken()
       if (!token) throw new Error("Not logged in")
-      return withReauthOn403(() => fetchProjectHistory(token, moduleCode, projectSlug))
+      return withReauthOn403(() =>
+        fetchProjectHistory(token, moduleCode, projectSlug)
+      )
     }
   )
 

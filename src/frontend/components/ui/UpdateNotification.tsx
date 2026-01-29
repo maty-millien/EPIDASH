@@ -19,7 +19,7 @@ export function UpdateNotification({
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 20, scale: 0.95 }}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      className="border-border bg-surface fixed bottom-6 right-6 z-50 flex max-w-sm items-start gap-3 rounded-xl border p-4 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.5)]"
+      className="border-border bg-surface fixed right-6 bottom-6 z-50 flex max-w-sm items-start gap-3 rounded-xl border p-4 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.5)]"
     >
       <div className="bg-pass-dim text-pass flex h-10 w-10 shrink-0 items-center justify-center rounded-lg">
         <IconDownload size={20} stroke={2} />

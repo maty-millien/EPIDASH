@@ -36,16 +36,24 @@ export function SettingsMenu() {
 
   useEffect(() => {
     const unsubProgress = electronAPI.onUpdateProgress((progress) => {
-      setUpdateState(prev => prev ? { ...prev, downloading: true, progress } : null)
+      setUpdateState((prev) =>
+        prev ? { ...prev, downloading: true, progress } : null
+      )
     })
     const unsubDownloaded = electronAPI.onUpdateDownloaded((info) => {
-      setUpdateState(prev => prev ? { ...prev, downloading: false, downloaded: true, info } : null)
+      setUpdateState((prev) =>
+        prev ? { ...prev, downloading: false, downloaded: true, info } : null
+      )
     })
     const unsubError = electronAPI.onUpdateError((error) => {
-      setUpdateState(prev => prev ? { ...prev, checking: false, downloading: false, error } : null)
+      setUpdateState((prev) =>
+        prev ? { ...prev, checking: false, downloading: false, error } : null
+      )
     })
     const unsubNotAvailable = electronAPI.onUpdateNotAvailable(() => {
-      setUpdateState(prev => prev ? { ...prev, checking: false, available: false } : null)
+      setUpdateState((prev) =>
+        prev ? { ...prev, checking: false, available: false } : null
+      )
     })
     return () => {
       unsubProgress()
@@ -56,10 +64,19 @@ export function SettingsMenu() {
   }, [])
 
   const handleCheckForUpdates = async () => {
-    setUpdateState(prev => prev ? { ...prev, checking: true, error: null } : {
-      checking: true, available: false, downloading: false, downloaded: false,
-      error: null, info: null, progress: null
-    })
+    setUpdateState((prev) =>
+      prev
+        ? { ...prev, checking: true, error: null }
+        : {
+            checking: true,
+            available: false,
+            downloading: false,
+            downloaded: false,
+            error: null,
+            info: null,
+            progress: null
+          }
+    )
     await electronAPI.checkForUpdates()
   }
 
@@ -71,19 +88,44 @@ export function SettingsMenu() {
     if (!updateState) return null
 
     if (updateState.checking) {
-      return { icon: IconLoader2, text: "Checking...", color: "text-accent", spin: true }
+      return {
+        icon: IconLoader2,
+        text: "Checking...",
+        color: "text-accent",
+        spin: true
+      }
     }
     if (updateState.downloading) {
-      return { icon: IconDownload, text: `Downloading ${updateState.progress ?? 0}%`, color: "text-accent", spin: false }
+      return {
+        icon: IconDownload,
+        text: `Downloading ${updateState.progress ?? 0}%`,
+        color: "text-accent",
+        spin: false
+      }
     }
     if (updateState.downloaded && updateState.info) {
-      return { icon: IconSparkles, text: `v${updateState.info.version} ready`, color: "text-pass", spin: false }
+      return {
+        icon: IconSparkles,
+        text: `v${updateState.info.version} ready`,
+        color: "text-pass",
+        spin: false
+      }
     }
     if (updateState.error) {
-      return { icon: IconAlertCircle, text: updateState.error, color: "text-fail", spin: false }
+      return {
+        icon: IconAlertCircle,
+        text: updateState.error,
+        color: "text-fail",
+        spin: false
+      }
     }
     if (updateState.available === false && !updateState.checking) {
-      return { icon: IconCheck, text: "Up to date", color: "text-pass", spin: false }
+      return {
+        icon: IconCheck,
+        text: "Up to date",
+        color: "text-pass",
+        spin: false
+      }
     }
     return null
   }
@@ -113,10 +155,10 @@ export function SettingsMenu() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.96 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
-            className="border-border bg-surface/95 absolute right-0 top-full z-50 mt-2 w-64 origin-top-right rounded-xl border p-2 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.6)] backdrop-blur-xl"
+            className="border-border bg-surface/95 absolute top-full right-0 z-50 mt-2 w-64 origin-top-right rounded-xl border p-2 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.6)] backdrop-blur-xl"
           >
             <div className="p-2">
-              <div className="text-text-tertiary mb-2 text-xs font-medium uppercase tracking-wider">
+              <div className="text-text-tertiary mb-2 text-xs font-medium tracking-wider uppercase">
                 Updates
               </div>
 
@@ -132,7 +174,9 @@ export function SettingsMenu() {
                       />
                     )
                   })()}
-                  <span className={`text-sm ${status.color} break-words`}>{status.text}</span>
+                  <span className={`text-sm ${status.color} break-words`}>
+                    {status.text}
+                  </span>
                 </div>
               )}
 

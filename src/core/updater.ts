@@ -1,5 +1,8 @@
 import { BrowserWindow } from "electron"
-import { autoUpdater, type UpdateInfo as ElectronUpdateInfo } from "electron-updater"
+import {
+  autoUpdater,
+  type UpdateInfo as ElectronUpdateInfo
+} from "electron-updater"
 import type { UpdateState, UpdateInfo } from "@/shared/types/update"
 
 let updateState: UpdateState = {
