@@ -40,7 +40,7 @@ function App() {
     setError(null);
     try {
       const data = (await electronAPI.fetchEpitestData(
-        selectedYear
+        selectedYear,
       )) as EpitestResult[];
       setApiData(data);
     } catch (err) {
@@ -104,6 +104,16 @@ function App() {
   useEffect(() => {
     if (!isLoggedIn) return;
     fetchData();
+  }, [isLoggedIn, fetchData]);
+
+  useEffect(() => {
+    if (!isLoggedIn) return;
+
+    const intervalId = setInterval(() => {
+      fetchData();
+    }, 60_000);
+
+    return () => clearInterval(intervalId);
   }, [isLoggedIn, fetchData]);
 
   if (authInProgress) {
