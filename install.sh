@@ -43,6 +43,8 @@ case "$OS" in
     mv "$TMPDIR/$APP_NAME.app" /Applications/
     rm -rf "$TMPDIR"
 
+    xattr -cr "/Applications/$APP_NAME.app"
+
     echo "✓ $APP_NAME installed to /Applications"
     echo "  Run: open /Applications/$APP_NAME.app"
     ;;

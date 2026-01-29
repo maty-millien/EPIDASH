@@ -34,7 +34,13 @@ curl -fsSL https://raw.githubusercontent.com/maty-millien/EPIDASH/main/install.s
 
 ### Manual Download
 
-Download the latest release for your platform from the [Releases](https://github.com/maty-millien/EPIDASH/releases) page:
+Download the latest release for your platform from the [Releases](https://github.com/maty-millien/EPIDASH/releases) page.
+
+**macOS users**: After unzipping, run this command before opening the app:
+```bash
+xattr -cr /Applications/EPIDASH.app
+```
+This removes the quarantine flag that macOS adds to downloaded files.
 
 | Platform | Download |
 |----------|----------|
