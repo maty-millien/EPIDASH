@@ -2,7 +2,7 @@
   "name": "epidash",
   "productName": "EPIDASH",
   "version": "0.1.4",
-  "description": "Epitech test results dashboard",
+  "description": "A sleek desktop dashboard for viewing your Epitest results",
   "main": ".vite/build/main.js",
   "private": true,
   "scripts": {
@@ -45,7 +45,7 @@
     "@typescript-eslint/parser": "^8.54.0",
     "@vitejs/plugin-react": "^5.1.2",
     "dotenv-cli": "^11.0.0",
-    "electron": "40.0.0",
+    "electron": "40.1.0",
     "eslint": "^9.39.2",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-no-relative-import-paths": "^1.6.1",
