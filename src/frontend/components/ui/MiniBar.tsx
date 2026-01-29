@@ -16,9 +16,7 @@ const barColors: Record<ProjectStatus, { bg: string; fill: string }> = {
 }
 
 export function MiniBar({ passed, total, status, filterKey }: MiniBarProps) {
-  if (total === 0) return null
-
-  const passPercent = (passed / total) * 100
+  const passPercent = total > 0 ? (passed / total) * 100 : 0
   const colors = barColors[status]
 
   return (

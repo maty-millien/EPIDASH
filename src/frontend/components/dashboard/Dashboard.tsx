@@ -1,46 +1,46 @@
-import { IconCalendar, IconRefresh } from "@tabler/icons-react"
-import { motion } from "framer-motion"
-import { useEffect, useMemo, useRef, useState } from "react"
-import type { EpitestResult } from "@/shared/types/api"
-import type { FilterStatus, ProcessedProject } from "@/shared/types/ui"
+import { FilterBar } from "@/frontend/components/dashboard/FilterBar";
+import { ProjectCard } from "@/frontend/components/dashboard/ProjectCard";
+import { SummaryCards } from "@/frontend/components/dashboard/SummaryCards";
+import { SettingsMenu } from "@/frontend/components/ui/SettingsMenu";
 import {
   calculateSummary,
   filterProjects,
   getUniqueModules,
-  processAllProjects
-} from "@/frontend/utils/processData"
-import { FilterBar } from "@/frontend/components/dashboard/FilterBar"
-import { ProjectCard } from "@/frontend/components/dashboard/ProjectCard"
-import { SummaryCards } from "@/frontend/components/dashboard/SummaryCards"
-import { SettingsMenu } from "@/frontend/components/ui/SettingsMenu"
+  processAllProjects,
+} from "@/frontend/utils/processData";
+import type { EpitestResult } from "@/shared/types/api";
+import type { FilterStatus, ProcessedProject } from "@/shared/types/ui";
+import { IconCalendar, IconRefresh } from "@tabler/icons-react";
+import { motion } from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 interface DashboardProps {
-  data: EpitestResult[]
-  onRefresh: () => void
-  isRefreshing: boolean
-  onSelectProject: (project: ProcessedProject) => void
-  selectedYear: number
-  onYearChange: (year: number) => void
+  data: EpitestResult[];
+  onRefresh: () => void;
+  isRefreshing: boolean;
+  onSelectProject: (project: ProcessedProject) => void;
+  selectedYear: number;
+  onYearChange: (year: number) => void;
 }
 
 const containerVariants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: { staggerChildren: 0.06 }
-  }
-} as const
+    transition: { staggerChildren: 0.06 },
+  },
+} as const;
 
 const itemVariants = {
   hidden: { opacity: 0, y: 12 },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.3, ease: "easeOut" as const }
-  }
-}
+    transition: { duration: 0.3, ease: "easeOut" as const },
+  },
+};
 
-const YEARS = Array.from({ length: 12 }, (_, i) => 2025 - i)
+const YEARS = Array.from({ length: 12 }, (_, i) => 2025 - i);
 
 export function Dashboard({
   data,
@@ -48,28 +48,27 @@ export function Dashboard({
   isRefreshing,
   onSelectProject,
   selectedYear,
-  onYearChange
+  onYearChange,
 }: DashboardProps) {
-  const [statusFilter, setStatusFilter] = useState<FilterStatus>("all")
-  const [moduleFilter, setModuleFilter] = useState<string | null>(null)
-  const [searchQuery, setSearchQuery] = useState("")
-  const hasAnimated = useRef(false)
+  const [statusFilter, setStatusFilter] = useState<FilterStatus>("all");
+  const [moduleFilter, setModuleFilter] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const hasAnimated = useRef(false);
 
-  // Mark as animated after first render to prevent re-animation on filter changes
   useEffect(() => {
-    hasAnimated.current = true
-  }, [])
+    hasAnimated.current = true;
+  }, []);
 
-  const projects = useMemo(() => processAllProjects(data), [data])
-  const summary = useMemo(() => calculateSummary(projects), [projects])
-  const modules = useMemo(() => getUniqueModules(projects), [projects])
+  const projects = useMemo(() => processAllProjects(data), [data]);
+  const summary = useMemo(() => calculateSummary(projects), [projects]);
+  const modules = useMemo(() => getUniqueModules(projects), [projects]);
 
   const filteredProjects = useMemo(
     () => filterProjects(projects, statusFilter, moduleFilter, searchQuery),
-    [projects, statusFilter, moduleFilter, searchQuery]
-  )
+    [projects, statusFilter, moduleFilter, searchQuery],
+  );
 
-  const filterKey = `${statusFilter}-${moduleFilter}-${searchQuery}`
+  const filterKey = `${statusFilter}-${moduleFilter}-${searchQuery}`;
 
   return (
     <motion.div
@@ -93,7 +92,7 @@ export function Dashboard({
             <select
               value={selectedYear}
               onChange={(e) => onYearChange(Number(e.target.value))}
-              className="text-text-secondary bg-transparent py-2 pr-3 pl-9 font-sans text-sm font-medium outline-none [-webkit-appearance:none] [appearance:none]"
+              className="text-text-secondary bg-transparent py-2 pr-3 pl-9 font-sans text-sm font-medium outline-none [-webkit-appearance:none] appearance-none"
             >
               {YEARS.map((year) => (
                 <option key={year} value={year} className="bg-elevated">
@@ -105,7 +104,7 @@ export function Dashboard({
           <button
             onClick={onRefresh}
             disabled={isRefreshing}
-            className="border-border bg-elevated text-text-secondary hover:border-border-medium hover:bg-hover hover:text-text flex items-center gap-2 rounded-lg border px-4 py-2 font-sans text-sm font-medium transition-all duration-150 active:scale-[0.98] disabled:opacity-50"
+            className="border-border bg-elevated text-text-secondary hover:border-border-medium hover:bg-hover hover:text-text flex items-center justify-center rounded-lg border p-2 transition-all duration-150 active:scale-[0.98] disabled:opacity-50"
           >
             <motion.div
               animate={isRefreshing ? { rotate: 360 } : { rotate: 0 }}
@@ -116,16 +115,15 @@ export function Dashboard({
               }
               whileTap={!isRefreshing ? { rotate: -360 } : undefined}
             >
-              <IconRefresh size={16} stroke={2} />
+              <IconRefresh size={18} stroke={2} />
             </motion.div>
-            Refresh
           </button>
           <SettingsMenu />
         </div>
       </div>
 
       {/* Summary Cards */}
-      <div className="mb-8">
+      <div className="mb-6">
         <SummaryCards summary={summary} />
       </div>
 
@@ -164,5 +162,5 @@ export function Dashboard({
         )}
       </motion.div>
     </motion.div>
-  )
+  );
 }

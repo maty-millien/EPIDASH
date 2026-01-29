@@ -97,11 +97,11 @@ src/
 ### Import Patterns
 
 ```tsx
-import type { ProcessedProject, FilterStatus } from "@/shared/types/ui"
-import type { EpitestResult } from "@/shared/types/api"
-import { MODULE_NAMES } from "@/shared/constants/modules"
-import { LoadingState } from "./components/ui/LoadingState"
-import { Dashboard } from "./components/dashboard/Dashboard"
+import type { ProcessedProject, FilterStatus } from "@/shared/types/ui";
+import type { EpitestResult } from "@/shared/types/api";
+import { MODULE_NAMES } from "@/shared/constants/modules";
+import { LoadingState } from "./components/ui/LoadingState";
+import { Dashboard } from "./components/dashboard/Dashboard";
 ```
 
 ## Architecture
@@ -109,6 +109,7 @@ import { Dashboard } from "./components/dashboard/Dashboard"
 ### Window Architecture
 
 The app uses `BaseWindow` + `WebContentsView` (modern Electron pattern):
+
 - `mainWindow` - The container window (`BaseWindow`)
 - `appView` - React app view (`WebContentsView`)
 - `authView` - Auth overlay view (`WebContentsView`) - shown during login
@@ -175,8 +176,8 @@ Use Tailwind CSS over pure CSS. The project has Tailwind configured and all styl
 Use `@tabler/icons-react` for all icons.
 
 ```tsx
-import { IconRefresh, IconCheck } from "@tabler/icons-react"
-;<IconRefresh size={16} stroke={2} />
+import { IconRefresh, IconCheck } from "@tabler/icons-react";
+<IconRefresh size={16} stroke={2} />;
 ```
 
 ## Animations
