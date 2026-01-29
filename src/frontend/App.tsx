@@ -1,110 +1,110 @@
-import "@/frontend/App.css"
-import { Dashboard } from "@/frontend/components/dashboard/Dashboard"
-import { ProjectDetails } from "@/frontend/components/project-details/ProjectDetails"
-import { ErrorState } from "@/frontend/components/ui/ErrorState"
-import { LoadingState } from "@/frontend/components/ui/LoadingState"
-import { UpdateNotification } from "@/frontend/components/ui/UpdateNotification"
-import type { EpitestResult } from "@/shared/types/api"
-import type { UpdateInfo } from "@/shared/types/update"
-import type { ProcessedProject, View } from "@/shared/types/ui"
-import { AnimatePresence, motion } from "framer-motion"
-import { useCallback, useEffect, useState } from "react"
+import "@/frontend/App.css";
+import { Dashboard } from "@/frontend/components/dashboard/Dashboard";
+import { ProjectDetails } from "@/frontend/components/project-details/ProjectDetails";
+import { ErrorState } from "@/frontend/components/ui/ErrorState";
+import { LoadingState } from "@/frontend/components/ui/LoadingState";
+import { UpdateNotification } from "@/frontend/components/ui/UpdateNotification";
+import type { EpitestResult } from "@/shared/types/api";
+import type { ProcessedProject, View } from "@/shared/types/ui";
+import type { UpdateInfo } from "@/shared/types/update";
+import { AnimatePresence, motion } from "framer-motion";
+import { useCallback, useEffect, useState } from "react";
 
-const { electronAPI } = window
+const { electronAPI } = window;
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [authInProgress, setAuthInProgress] = useState(false)
-  const [loading, setLoading] = useState(true)
-  const [fetching, setFetching] = useState(false)
-  const [apiData, setApiData] = useState<EpitestResult[] | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [currentView, setCurrentView] = useState<View>({ type: "dashboard" })
-  const [updateReady, setUpdateReady] = useState<UpdateInfo | null>(null)
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [authInProgress, setAuthInProgress] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [fetching, setFetching] = useState(false);
+  const [apiData, setApiData] = useState<EpitestResult[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [currentView, setCurrentView] = useState<View>({ type: "dashboard" });
+  const [updateReady, setUpdateReady] = useState<UpdateInfo | null>(null);
 
   const handleSelectProject = useCallback((project: ProcessedProject) => {
-    setCurrentView({ type: "project-details", project })
-  }, [])
+    setCurrentView({ type: "project-details", project });
+  }, []);
 
   const handleBackToDashboard = useCallback(() => {
-    setCurrentView({ type: "dashboard" })
-  }, [])
+    setCurrentView({ type: "dashboard" });
+  }, []);
 
   const fetchData = useCallback(async () => {
-    setFetching(true)
-    setError(null)
+    setFetching(true);
+    setError(null);
     try {
-      const data = (await electronAPI.fetchEpitestData()) as EpitestResult[]
-      setApiData(data)
+      const data = (await electronAPI.fetchEpitestData()) as EpitestResult[];
+      setApiData(data);
     } catch (err) {
-      setError(String(err))
+      setError(String(err));
     } finally {
-      setFetching(false)
+      setFetching(false);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     const unsubscribe = electronAPI.onAuthStateChange((state) => {
-      setAuthInProgress(state.inProgress)
+      setAuthInProgress(state.inProgress);
       if (!state.inProgress) {
         electronAPI.isLoggedIn().then((loggedIn) => {
-          setIsLoggedIn(loggedIn)
-        })
+          setIsLoggedIn(loggedIn);
+        });
       }
-    })
+    });
 
-    return unsubscribe
-  }, [])
+    return unsubscribe;
+  }, []);
 
   useEffect(() => {
     const initAuth = async () => {
-      const authState = await electronAPI.getAuthState()
-      setAuthInProgress(authState.inProgress)
+      const authState = await electronAPI.getAuthState();
+      setAuthInProgress(authState.inProgress);
 
-      const loggedIn = await electronAPI.isLoggedIn()
+      const loggedIn = await electronAPI.isLoggedIn();
 
       if (loggedIn) {
-        setIsLoggedIn(true)
-        setLoading(false)
+        setIsLoggedIn(true);
+        setLoading(false);
       } else {
         try {
-          await electronAPI.startLogin()
+          await electronAPI.startLogin();
         } catch (err) {
-          setError(String(err))
+          setError(String(err));
         }
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    initAuth()
-  }, [])
+    initAuth();
+  }, []);
 
   useEffect(() => {
     const unsubscribe = electronAPI.onUpdateDownloaded((info) => {
-      setUpdateReady(info)
-    })
-    return unsubscribe
-  }, [])
+      setUpdateReady(info);
+    });
+    return unsubscribe;
+  }, []);
 
   const handleInstallUpdate = useCallback(() => {
-    electronAPI.installUpdate()
-  }, [])
+    electronAPI.installUpdate();
+  }, []);
 
   const handleDismissUpdate = useCallback(() => {
-    setUpdateReady(null)
-  }, [])
+    setUpdateReady(null);
+  }, []);
 
   useEffect(() => {
-    if (!isLoggedIn) return
-    fetchData()
-  }, [isLoggedIn, fetchData])
+    if (!isLoggedIn) return;
+    fetchData();
+  }, [isLoggedIn, fetchData]);
 
   if (authInProgress) {
-    return <LoadingState />
+    return <LoadingState />;
   }
 
   if (loading || !isLoggedIn) {
-    return null
+    return null;
   }
 
   return (
@@ -183,7 +183,7 @@ function App() {
         )}
       </AnimatePresence>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

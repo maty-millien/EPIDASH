@@ -11,20 +11,17 @@ import { FuseV1Options, FuseVersion } from "@electron/fuses"
 const config: ForgeConfig = {
   packagerConfig: {
     name: "EPIDASH",
-    executableName: "epidash",
+    executableName: "EPIDASH",
     appBundleId: "com.maty.epidash",
     asar: true,
     icon: "./assets/icon",
-    extraResource: ["./app-update.yml"],
+    extraResource: ["./app-update.yml", "./scripts/update.sh"],
     protocols: [
       {
         name: "EPIDASH Protocol",
         schemes: ["epidash"]
       }
-    ],
-    extendInfo: {
-      CFBundleDisplayName: "EPIDASH"
-    }
+    ]
   },
   rebuildConfig: {},
   makers: [

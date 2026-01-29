@@ -1,8 +1,11 @@
-import { BrowserWindow } from "electron"
+import { app, BrowserWindow } from "electron"
 import {
   autoUpdater,
   type UpdateInfo as ElectronUpdateInfo
 } from "electron-updater"
+import { spawn } from "child_process"
+import fs from "fs"
+import path from "path"
 import type { UpdateState, UpdateInfo } from "@/shared/types/update"
 
 let updateState: UpdateState = {
@@ -36,7 +39,6 @@ function convertUpdateInfo(info: ElectronUpdateInfo): UpdateInfo {
 
 export function initializeUpdater(): void {
   autoUpdater.autoDownload = true
-  autoUpdater.autoInstallOnAppQuit = true
 
   autoUpdater.on("checking-for-update", () => {
     updateState = { ...updateState, checking: true, error: null }
@@ -117,10 +119,56 @@ export function stopPeriodicChecks(): void {
   }
 }
 
+function getLinuxUpdatePath(version: string): string {
+  const arch = process.arch === "x64" ? "amd64" : process.arch
+  const cacheDir = path.join(app.getPath("home"), ".cache/epidash/pending")
+
+  const debPath = path.join(cacheDir, `epidash_${version}_${arch}.deb`)
+  const rpmPath = path.join(cacheDir, `epidash-${version}.${arch}.rpm`)
+
+  try {
+    fs.accessSync(debPath)
+    return debPath
+  } catch {
+    return rpmPath
+  }
+}
+
 export function installUpdate(): void {
-  setImmediate(() => {
+  if (!updateState.info?.version) {
     autoUpdater.quitAndInstall(false, true)
+    return
+  }
+
+  const version = updateState.info.version
+  const scriptPath = path.join(process.resourcesPath, "update.sh")
+
+  let updatePath: string
+  let appPath: string
+
+  if (process.platform === "darwin") {
+    const arch = process.arch === "arm64" ? "arm64" : "x64"
+    updatePath = path.join(
+      app.getPath("home"),
+      "Library/Caches/epidash/pending",
+      `EPIDASH-darwin-${arch}-${version}.zip`
+    )
+    appPath = app.getPath("exe").replace(/\/Contents\/MacOS\/EPIDASH$/, "")
+  } else if (process.platform === "linux") {
+    updatePath = getLinuxUpdatePath(version)
+    appPath = "/usr/bin/epidash"
+  } else {
+    autoUpdater.quitAndInstall(false, true)
+    return
+  }
+
+  const child = spawn("bash", [scriptPath, updatePath, appPath], {
+    detached: true,
+    stdio: "ignore"
   })
+  child.unref()
+
+  app.quit()
 }
 
 export function getUpdateState(): UpdateState {
