@@ -23,7 +23,6 @@ interface DashboardProps {
   onSelectProject: (project: ProcessedProject) => void;
   selectedYear: number;
   onYearChange: (year: number) => void;
-  lastSyncTime: Date | null;
 }
 
 const containerVariants = {
@@ -52,7 +51,6 @@ export function Dashboard({
   onSelectProject,
   selectedYear,
   onYearChange,
-  lastSyncTime,
 }: DashboardProps) {
   const [statusFilter, setStatusFilter] = useState<FilterStatus>("all");
   const [moduleFilter, setModuleFilter] = useState<string | null>(null);
@@ -150,7 +148,7 @@ export function Dashboard({
         animate="show"
       >
         {filteredProjects.length === 0 ? (
-          <div className="text-text-tertiary py-12 text-center">
+          <div className="text-text-tertiary py-12 text-center items-center col-span-full">
             No projects match your filters
           </div>
         ) : (
@@ -170,7 +168,7 @@ export function Dashboard({
       <ActivityTrends projects={projects} />
 
       {/* Footer */}
-      <AppFooter lastSyncTime={lastSyncTime} />
+      <AppFooter />
     </motion.div>
   );
 }

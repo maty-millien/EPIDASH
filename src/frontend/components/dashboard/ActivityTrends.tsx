@@ -58,41 +58,16 @@ function CustomTooltip({ active, payload }: CustomTooltipProps) {
   );
 }
 
-function calculateStats(data: ActivityTrendPoint[]) {
-  if (data.length === 0) {
-    return { totalRuns: 0, avgPassRate: 0, bestStreak: 0 };
-  }
-
-  const totalRuns = data.reduce((sum, d) => sum + d.testRuns, 0);
-  const avgPassRate =
-    data.reduce((sum, d) => sum + d.passRate, 0) / data.length;
-
-  let bestStreak = 0;
-  let currentStreak = 0;
-  for (const point of data) {
-    if (point.passRate >= 80) {
-      currentStreak++;
-      bestStreak = Math.max(bestStreak, currentStreak);
-    } else {
-      currentStreak = 0;
-    }
-  }
-
-  return { totalRuns, avgPassRate, bestStreak };
-}
-
 export function ActivityTrends({ projects }: ActivityTrendsProps) {
   const trendData = useMemo(
     () => aggregateActivityTrends(projects, "all"),
     [projects],
   );
 
-  const stats = useMemo(() => calculateStats(trendData), [trendData]);
-
   if (projects.length === 0) return null;
 
   return (
-    <div className="mt-8">
+    <div className="mt-6">
       <div className="bg-surface border-border relative overflow-hidden rounded-xl border">
         {trendData.length === 0 ? (
           <div className="text-text-tertiary flex h-50 items-center justify-center text-sm">
@@ -195,29 +170,6 @@ export function ActivityTrends({ projects }: ActivityTrendsProps) {
                   />
                 </AreaChart>
               </ResponsiveContainer>
-            </div>
-
-            <div className="border-border grid grid-cols-3 border-t">
-              <div className="border-border flex flex-col items-center border-r py-4">
-                <span className="text-accent font-mono text-lg font-semibold">
-                  {stats.totalRuns}
-                </span>
-                <span className="text-text-tertiary text-xs">Total Runs</span>
-              </div>
-              <div className="border-border flex flex-col items-center border-r py-4">
-                <span className="text-accent font-mono text-lg font-semibold">
-                  {Math.round(stats.avgPassRate)}%
-                </span>
-                <span className="text-text-tertiary text-xs">
-                  Avg Pass Rate
-                </span>
-              </div>
-              <div className="flex flex-col items-center py-4">
-                <span className="text-accent font-mono text-lg font-semibold">
-                  {stats.bestStreak}
-                </span>
-                <span className="text-text-tertiary text-xs">Best Streak</span>
-              </div>
             </div>
           </>
         )}
