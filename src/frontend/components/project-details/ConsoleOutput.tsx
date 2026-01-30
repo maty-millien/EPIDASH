@@ -1,5 +1,5 @@
 import { IconCheck, IconCopy } from "@tabler/icons-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 
 interface ConsoleOutputProps {
   output: string;
@@ -74,16 +74,16 @@ function styleLine(line: string): StyledLine {
 
 export function ConsoleOutput({ output }: ConsoleOutputProps) {
   const [copied, setCopied] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
 
-  const lines = useMemo(() => output.split("\n"), [output]);
-  const styledLines = useMemo(() => lines.map(styleLine), [lines]);
-
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  const lines = useMemo(() => {
+    const allLines = output.split("\n");
+    while (allLines.length > 1 && allLines[allLines.length - 1] === "") {
+      allLines.pop();
     }
+    allLines.push("");
+    return allLines;
   }, [output]);
+  const styledLines = useMemo(() => lines.map(styleLine), [lines]);
 
   const handleCopy = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -94,9 +94,9 @@ export function ConsoleOutput({ output }: ConsoleOutputProps) {
 
   return (
     <div className="bg-surface border-border overflow-hidden rounded-xl border">
-      <div className="flex items-center justify-between px-5 py-4">
+      <div className="flex items-center justify-between px-5 py-3">
         <h2 className="text-text-secondary text-xs font-semibold tracking-wider uppercase">
-          Build Output
+          Console Output
         </h2>
 
         <button
@@ -118,10 +118,7 @@ export function ConsoleOutput({ output }: ConsoleOutputProps) {
       </div>
 
       <div className="border-border border-t">
-        <div
-          ref={scrollRef}
-          className="bg-elevated max-h-150 overflow-auto p-4"
-        >
+        <div className="bg-elevated p-4">
           <pre className="font-mono text-xs leading-relaxed">
             {styledLines.map((line, i) => (
               <div key={i} className="flex">

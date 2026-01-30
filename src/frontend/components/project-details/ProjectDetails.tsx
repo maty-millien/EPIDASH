@@ -95,7 +95,7 @@ export function ProjectDetails({
 
   if (error) {
     return (
-      <div className="px-8 pt-6 pb-12">
+      <div className="px-8 pt-6 pb-8">
         <DetailsHeader project={project} gitCommit={null} onBack={onBack} />
         <div className="text-fail mt-16 text-center text-sm">{error}</div>
       </div>
@@ -104,7 +104,7 @@ export function ProjectDetails({
 
   return (
     <motion.div
-      className="px-8 pt-6 pb-12"
+      className="px-8 pt-6 pb-2"
       variants={containerVariants}
       initial="hidden"
       animate="show"

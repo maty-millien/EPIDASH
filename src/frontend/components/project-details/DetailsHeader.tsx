@@ -55,7 +55,7 @@ export function DetailsHeader({
         </div>
 
         {shortCommit && (
-          <div className="bg-elevated text-text-secondary flex items-center gap-2 rounded-lg px-3 py-2 font-mono text-xs">
+          <div className="border-border bg-surface text-text-secondary flex items-center gap-2 rounded-lg border px-3 py-2 font-mono text-xs">
             <IconGitCommit
               size={14}
               stroke={2}
